@@ -14,13 +14,36 @@ datasource db {
 }
 
 model User {
-  id         String              @id @default(cuid())
-  email      String              @unique
-  name       String
-  password   String
-  avatarPath String?
-  createdAt  DateTime            @default(now())
-  resetCodes ResetPasswordCode[]
+  id          String              @id @default(cuid())
+  email       String              @unique
+  name        String
+  password    String
+  avatarPath  String?
+  createdAt   DateTime            @default(now())
+  isConfirmed Boolean             @default(false)
+  resetCodes  ResetPasswordCode[]
+  confirmCode ConfirmEmailCode[]
+  canvases    Canvas[]
+}
+
+model Canvas {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  userId      String
+  canvasJSON  Json?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id])
+}
+
+model ConfirmEmailCode {
+  id          String    @id @default(cuid())
+  userId      String    @unique
+  token       String
+  confirmedAt DateTime?
+  createdAt   DateTime  @default(now())
+  user        User      @relation(fields: [userId], references: [id])
 }
 
 model ResetPasswordCode {

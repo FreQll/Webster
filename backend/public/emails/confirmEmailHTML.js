@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 dotenv.config();
 
-export const resetPasswordHTML = (recipient, resetCode) => {
+export const confirmEmailHTML = (recipient, emailCode) => {
   return `
   <!DOCTYPE html>
   <html lang="en">
@@ -12,7 +12,7 @@ export const resetPasswordHTML = (recipient, resetCode) => {
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
-    <title>🔒 Password Reset 🔒</title>
+    <title>📧 Email Confirmation 📧</title>
     <style>
       * {
         font-family: "Montserrat", sans-serif;
@@ -76,13 +76,12 @@ export const resetPasswordHTML = (recipient, resetCode) => {
   <body>
     <div class="container">
       <div class="content">
-        <h1>🔒 Password Reset 🔒</h1>
+        <h1>📧 Email Confirmation 📧</h1>
         <p>Hello ${recipient},</p>
-        <p>We received a request to reset your password. To confirm your request, please use the 6-digit code below </p>
-        <h2>${resetCode}</h2>
-
+        <p>To ensure the security of your account and protect your data, we have implemented Two-Factor Authentication (2FA) as an additional layer of security.</p>
+        <p>Enter code below to confirm your email.</p>
+        <h2>${emailCode}</h2>
         <hr>
-        <p class="reminder">This code is valid for 1 hour and can be used only once.</p>
       </div>
       <div class="footer">
         <p>Best regards,<br> ${process.env.PROJECT_NAME} </p>

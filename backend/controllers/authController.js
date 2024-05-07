@@ -4,12 +4,13 @@ import { generateRandomCode, jwtGenerator } from "../tools/auth.js";
 import bcrypt from "bcrypt";
 import { sendEmail } from "../tools/sendEmail.js";
 import { resetPasswordHTML } from "../public/emails/resetPasswordHTML.js";
+import { confirmEmailHTML } from "../public/emails/confirmEmailHTML.js";
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ message: "Invalid input." });
+    return res.status(400).json({ message: "Missing parameters." });
   }
 
   const user = await prisma.user.findFirst({
@@ -20,6 +21,10 @@ export const login = async (req, res) => {
 
   if (!user) {
     return res.status(401).json({ message: "Invalid credentials." });
+  }
+
+  if (!user.isConfirmed) {
+    return res.status(401).json({ message: "Email not confirmed." });
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
@@ -44,7 +49,7 @@ export const register = async (req, res) => {
   const { email, password, name } = req.body;
 
   if (!email || !password || !name) {
-    return res.status(400).json({ message: "Invalid input." });
+    return res.status(400).json({ message: "Missing parameters." });
   }
 
   if (!email.includes("@")) {
@@ -69,12 +74,6 @@ export const register = async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  //   let userType = UserType.USER;
-
-  //   if (type || type === "organization" || type === "ORGANIZATION") {
-  //     userType = UserType.ORGANIZATION;
-  //   }
-
   const user = await prisma.user.create({
     data: {
       email,
@@ -83,6 +82,41 @@ export const register = async (req, res) => {
     },
   });
 
+  const emailConfirmation = await prisma.confirmEmailCode.findFirst({
+    where: {
+      userId: user.id,
+    },
+  });
+
+  if (emailConfirmation && emailConfirmation.confirmedAt) {
+    return res.status(400).json({ message: "Email already confirmed." });
+  }
+
+  if (emailConfirmation) {
+    return res
+      .status(400)
+      .json({ message: "Email confirmation pending. Check your email." });
+  }
+
+  const emailConfirmationCode = generateRandomCode();
+  const emailConfirmationCodeHashed = await bcrypt.hash(
+    emailConfirmationCode.toString(),
+    10
+  );
+
+  await prisma.confirmEmailCode.create({
+    data: {
+      userId: user.id,
+      token: emailConfirmationCodeHashed,
+    },
+  });
+
+  await sendEmail(
+    email,
+    "📧 Email Confirmation 📧",
+    confirmEmailHTML(user.name, emailConfirmationCode)
+  );
+
   const protectedUser = {
     id: user.id,
     email: user.email,
@@ -90,6 +124,67 @@ export const register = async (req, res) => {
   };
 
   return res.status(200).json({ user: protectedUser });
+};
+
+export const confirmEmail = async (req, res) => {
+  const { code, email } = req.body;
+
+  if (!code || !email) {
+    return res.status(400).json({ message: "Missing parameters." });
+  }
+
+  const user = await prisma.user.findFirst({
+    where: {
+      email,
+    },
+  });
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found." });
+  }
+
+  const emailConfirmation = await prisma.confirmEmailCode.findFirst({
+    where: {
+      userId: user.id,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
+
+  if (!emailConfirmation) {
+    return res.status(404).json({ message: "Email confirmation not found." });
+  }
+
+  if (emailConfirmation.confirmedAt) {
+    return res.status(400).json({ message: "Email already confirmed." });
+  }
+
+  const isCodeValid = await bcrypt.compare(code, emailConfirmation.token);
+
+  if (!isCodeValid) {
+    return res.status(401).json({ message: "Invalid confirmation code." });
+  }
+
+  await prisma.confirmEmailCode.update({
+    where: {
+      id: emailConfirmation.id,
+    },
+    data: {
+      confirmedAt: new Date(),
+    },
+  });
+
+  await prisma.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      isConfirmed: true,
+    },
+  });
+
+  return res.status(200).json({ message: "Email confirmed." });
 };
 
 export const resetPassword = async (req, res) => {
