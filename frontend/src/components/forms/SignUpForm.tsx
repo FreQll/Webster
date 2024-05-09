@@ -5,12 +5,15 @@ import { Button } from "../ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import axios, { POST_CONFIG } from "@/api/axios";
+import { useState } from "react";
 
 const FormSchema = z
   .object({
@@ -32,7 +35,11 @@ const FormSchema = z
     path: ["confirm"],
   });
 
-export default function SignUpForm() {
+export default function SignUpForm({
+  setForm,
+}: {
+  setForm: (form: "signUp" | "emailConfirm") => void;
+}) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -43,8 +50,22 @@ export default function SignUpForm() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
+  const [error, setError] = useState<string>("");
+
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data);
+    try {
+      const response = await axios.post("/auth/register", data, POST_CONFIG);
+      if (response.status === 200) {
+        console.log("User registered successfully.");
+        //! Redirect to confirm email page
+        setForm("emailConfirm");
+      }
+      console.log(response.data);
+    } catch (error: any) {
+      console.log(error.response.data.message);
+      setError(error.response.data.message);
+    }
   }
 
   return (
@@ -57,7 +78,11 @@ export default function SignUpForm() {
             <FormItem>
               <FormLabel>Your Email</FormLabel>
               <FormControl>
-                <Input placeholder="johndoe@example.com" {...field} />
+                <Input
+                  autoComplete="email"
+                  placeholder="johndoe@example.com"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -70,7 +95,11 @@ export default function SignUpForm() {
             <FormItem>
               <FormLabel>Your Name</FormLabel>
               <FormControl>
-                <Input placeholder="John Doe" {...field} />
+                <Input
+                  autoComplete="username"
+                  placeholder="John Doe"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -83,7 +112,7 @@ export default function SignUpForm() {
             <FormItem>
               <FormLabel>Your Password</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <Input autoComplete="new-password" type="password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -96,12 +125,16 @@ export default function SignUpForm() {
             <FormItem>
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
-                <Input type="password" {...field} />
+                <Input autoComplete="new-password" type="password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
           )}
         />
+
+        {error && (
+          <FormDescription className=" text-red-500">{error}</FormDescription>
+        )}
         <Button type="submit">Submit</Button>
       </form>
     </Form>

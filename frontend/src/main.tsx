@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 // import App from "./App.tsx";
 import "./index.css";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import Auth from "./pages/Auth.tsx";
+import SignUp from "./pages/SignUp.tsx";
 
 const router = createBrowserRouter([
   {
@@ -11,8 +11,12 @@ const router = createBrowserRouter([
     element: <h1>Home</h1>,
   },
   {
-    path: "/auth",
-    element: <Auth />,
+    path: "/signup",
+    element: <SignUp />,
+  },
+  {
+    path: "/login",
+    element: <h1>Login</h1>,
   },
 ]);
 
