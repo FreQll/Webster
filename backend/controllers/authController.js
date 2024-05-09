@@ -82,6 +82,15 @@ export const register = async (req, res) => {
     },
   });
 
+  await prisma.user.update({
+    where: {
+      id: user.id,
+    },
+    data: {
+      avatarPath: `http://localhost:3001/user/avatar/${user.id}`,
+    },
+  });
+
   const emailConfirmation = await prisma.confirmEmailCode.findFirst({
     where: {
       userId: user.id,
