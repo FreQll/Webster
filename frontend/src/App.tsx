@@ -1,11 +1,11 @@
 import { Route, Routes } from "react-router-dom";
-import "./App.css";
 import Auth from "./pages/SignUp";
+import Main from "./pages/Main";
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<h1>Home</h1>} />
+      <Route path="/" element={<Main />} />
 
       <Route path="/auth" element={<Auth />} />
     </Routes>
