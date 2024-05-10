@@ -10,6 +10,7 @@ import { Layout } from "./components/Layout.tsx";
 import { Provider } from "react-redux";
 import store from "./store/index.ts";
 import Main from "./pages/Main.tsx";
+import ResetPassword from "./pages/ResetPassword.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -18,6 +19,7 @@ const router = createBrowserRouter([
       { path: "/", element: <Main /> },
       { path: "signup", element: <SignUp /> },
       { path: "login", element: <SignIn /> },
+      { path: "reset-password", element: <ResetPassword /> },
     ],
   },
   // {

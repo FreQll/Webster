@@ -16,7 +16,7 @@ import axios, { POST_CONFIG } from "@/api/axios";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { loginUser } from "@/store/UserSlice";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const FormSchema = z.object({
@@ -106,6 +106,7 @@ export default function SignInForm() {
           <FormDescription className=" text-red-500">{error}</FormDescription>
         )}
         <Button type="submit">Submit</Button>
+        <Link to="/reset-password">Forgot Password?</Link>
       </form>
     </Form>
   );
