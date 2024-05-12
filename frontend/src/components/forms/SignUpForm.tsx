@@ -70,7 +70,10 @@ export default function SignUpForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full space-y-6 text-left"
+      >
         <FormField
           control={form.control}
           name="email"
@@ -110,9 +113,14 @@ export default function SignUpForm({
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Your Password</FormLabel>
+              <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input autoComplete="new-password" type="password" {...field} />
+                <Input
+                  autoComplete="new-password"
+                  type="password"
+                  placeholder="Password"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -125,7 +133,12 @@ export default function SignUpForm({
             <FormItem>
               <FormLabel>Confirm Password</FormLabel>
               <FormControl>
-                <Input autoComplete="new-password" type="password" {...field} />
+                <Input
+                  autoComplete="new-password"
+                  type="password"
+                  placeholder="Confirm Password"
+                  {...field}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -135,7 +148,9 @@ export default function SignUpForm({
         {error && (
           <FormDescription className=" text-red-500">{error}</FormDescription>
         )}
-        <Button type="submit">Submit</Button>
+        <Button type="submit" className="w-full">
+          Submit
+        </Button>
       </form>
     </Form>
   );

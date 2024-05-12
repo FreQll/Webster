@@ -82,7 +82,7 @@ export default function ConfirmResetPasswordForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
         <FormField
           control={form.control}
           name="email"
@@ -157,10 +157,17 @@ export default function ConfirmResetPasswordForm({
         )}
 
         <div className=" flex flex-row gap-2">
-          <Button type="button" onClick={() => setForm("resetPassword")}>
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => setForm("resetPassword")}
+            className="w-[20%]"
+          >
             Back
           </Button>
-          <Button type="submit">Submit</Button>
+          <Button type="submit" className="w-[80%]">
+            Submit
+          </Button>
         </div>
       </form>
     </Form>

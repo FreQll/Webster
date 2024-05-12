@@ -70,7 +70,10 @@ export default function SignInForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full space-y-6 text-left"
+      >
         <FormField
           control={form.control}
           name="email"
@@ -105,8 +108,14 @@ export default function SignInForm() {
         {error && (
           <FormDescription className=" text-red-500">{error}</FormDescription>
         )}
-        <Button type="submit">Submit</Button>
-        <Link to="/reset-password">Forgot Password?</Link>
+        <Button type="submit" className="w-full">
+          Submit
+        </Button>
+        <div className="w-full text-center">
+          <Link to="/reset-password">
+            <Button variant="link">Forgot Password?</Button>
+          </Link>
+        </div>
       </form>
     </Form>
   );

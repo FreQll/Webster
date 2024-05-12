@@ -54,7 +54,10 @@ export default function ResetPasswordForm({
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="w-full space-y-6 text-left"
+      >
         <FormField
           control={form.control}
           name="email"
@@ -75,9 +78,16 @@ export default function ResetPasswordForm({
         {error && (
           <FormDescription className=" text-red-500">{error}</FormDescription>
         )}
-        <div className=" flex flex-row gap-2">
-          <Button type="submit">Submit</Button>
-          <Button type="button" onClick={() => setForm("emailConfirm")}>
+        <div className=" flex flex-col justify-between gap-2">
+          <Button type="submit" className="w-full">
+            Submit
+          </Button>
+          <Button
+            type="button"
+            variant="link"
+            className="w-full"
+            onClick={() => setForm("emailConfirm")}
+          >
             I have code already
           </Button>
         </div>
