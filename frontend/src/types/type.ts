@@ -87,7 +87,7 @@ export type ImageUpload = {
   file: File;
   canvas: React.MutableRefObject<fabric.Canvas>;
   shapeRef: React.MutableRefObject<fabric.Object | null>;
-  syncShapeInStorage: (shape: fabric.Object) => void;
+  // syncShapeInStorage: (shape: fabric.Object) => void;
 };
 
 export type RightSidebarProps = {

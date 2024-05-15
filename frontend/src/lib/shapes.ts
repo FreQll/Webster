@@ -61,7 +61,7 @@ export const createText = (pointer: PointerEvent, text: string) => {
     fontFamily: "Helvetica",
     fontSize: 36,
     fontWeight: "400",
-    objectId: uuidv4()
+    objectId: uuidv4(),
   } as fabric.ITextOptions);
 };
 
@@ -90,12 +90,7 @@ export const createSpecificShape = (
   }
 };
 
-export const handleImageUpload = ({
-  file,
-  canvas,
-  shapeRef,
-  syncShapeInStorage,
-}: ImageUpload) => {
+export const handleImageUpload = ({ file, canvas, shapeRef }: ImageUpload) => {
   const reader = new FileReader();
 
   reader.onload = () => {
@@ -110,7 +105,7 @@ export const handleImageUpload = ({
 
       shapeRef.current = img;
 
-      syncShapeInStorage(img);
+      // syncShapeInStorage(img);
       canvas.current.requestRenderAll();
     });
   };
@@ -145,7 +140,7 @@ export const modifyShape = ({
   // if  property is width or height, set the scale of the selected element
   if (property === "width") {
     selectedElement.set("scaleX", 1);
-    selectedElement.set("width", value);  
+    selectedElement.set("width", value);
   } else if (property === "height") {
     selectedElement.set("scaleY", 1);
     selectedElement.set("height", value);
