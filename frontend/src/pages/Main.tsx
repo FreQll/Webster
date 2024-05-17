@@ -14,11 +14,18 @@ import { handleImageUpload } from "@/lib/shapes";
 import { handleDelete, handleKeyDown } from "@/lib/key-events";
 
 export default function Main() {
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const [activeElement, setActiveElement] = useState<ActiveElement>({
+    name: "",
+    value: "",
+    icon: "",
+  });
+
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricRef = useRef<fabric.Canvas | null>(null);
   const shapeRef = useRef<fabric.Object | null>(null);
   const isDrawing = useRef(false);
-  const selectedShapeRef = useRef<string | null>("rectangle");
+  const selectedShapeRef = useRef<string | null>(activeElement?.name || null);
 
   useEffect(() => {
     const canvas = initializeFabric({ canvasRef, fabricRef });
@@ -38,12 +45,6 @@ export default function Main() {
     });
   }, []);
 
-  const imageInputRef = useRef<HTMLInputElement>(null);
-  const [activeElement, setActiveElement] = useState<ActiveElement>({
-    name: "",
-    value: "",
-    icon: "",
-  });
 
   // const syncShapeInStorage = useMutation(({ storage }, object) => {
   //   // if the passed object is null, return

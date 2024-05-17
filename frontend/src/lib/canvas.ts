@@ -59,6 +59,8 @@ export const handleCanvasMouseDown = ({
   // set canvas drawing mode to false
   canvas.isDrawingMode = false;
 
+  
+
   // if selected shape is freeform, set drawing mode to true and return
   if (selectedShapeRef.current === "freeform") {
     isDrawing.current = true;
@@ -69,6 +71,8 @@ export const handleCanvasMouseDown = ({
 
   canvas.isDrawingMode = false;
 
+  console.log(target?.type);
+  console.log(selectedShapeRef);
   // if target is the selected shape or active selection, set isDrawing to false
   if (
     target &&

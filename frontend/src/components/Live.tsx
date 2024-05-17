@@ -10,6 +10,7 @@ const Live = ({ canvasRef }: Props) => {
     mode: CursorMode.Hidden,
   });
 
+
   const handlePointerLeave = useCallback(() => {
     setCursorState({
       mode: CursorMode.Hidden,
