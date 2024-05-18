@@ -11,7 +11,7 @@ import {
 } from "@/lib/canvas";
 import { ActiveElement } from "@/types/type";
 import { handleImageUpload } from "@/lib/shapes";
-import { handleDelete, handleKeyDown } from "@/lib/key-events";
+import { handleDelete } from "@/lib/key-events";
 
 export default function Main() {
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -43,7 +43,7 @@ export default function Main() {
     window.addEventListener("resize", () => {
       handleResize({ canvas });
     });
-  }, []);
+  }, );
 
 
   // const syncShapeInStorage = useMutation(({ storage }, object) => {
@@ -105,6 +105,12 @@ export default function Main() {
           fabricRef.current.isDrawingMode = false;
         }
         break;
+
+      case "delete":
+        handleDelete(fabricRef.current as any);
+        // setActiveElement({ name: "", value: "", icon: "" });
+        break;
+
 
       // for comments, do nothing
       case "comments":
