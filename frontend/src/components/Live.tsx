@@ -10,7 +10,6 @@ const Live = ({ canvasRef }: Props) => {
     mode: CursorMode.Hidden,
   });
 
-
   const handlePointerLeave = useCallback(() => {
     setCursorState({
       mode: CursorMode.Hidden,
@@ -39,7 +38,7 @@ const Live = ({ canvasRef }: Props) => {
       onPointerDown={handlePointerDown}
       onPointerLeave={handlePointerLeave}
       onPointerUp={handlePointerUp}
-      className="bg-gray-100 w-full h-full"
+      className="bg-white w-full h-full "
     >
       <canvas ref={canvasRef} className="w-full h-full" />
     </div>

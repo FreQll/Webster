@@ -74,7 +74,6 @@ export type ModifyShape = {
   property: string;
   value: any;
   activeObjectRef: React.MutableRefObject<fabric.Object | null>;
-  syncShapeInStorage: (shape: fabric.Object) => void;
 };
 
 export type ElementDirection = {
@@ -96,7 +95,6 @@ export type RightSidebarProps = {
   fabricRef: React.RefObject<fabric.Canvas | null>;
   activeObjectRef: React.RefObject<fabric.Object | null>;
   isEditingRef: React.MutableRefObject<boolean>;
-  syncShapeInStorage: (obj: any) => void;
 };
 
 export type NavbarProps = {
@@ -138,7 +136,6 @@ export type CanvasMouseMove = {
   isDrawing: React.MutableRefObject<boolean>;
   selectedShapeRef: any;
   shapeRef: any;
-  syncShapeInStorage: (shape: fabric.Object) => void;
 };
 
 export type CanvasMouseUp = {
@@ -147,18 +144,15 @@ export type CanvasMouseUp = {
   shapeRef: any;
   activeObjectRef: React.MutableRefObject<fabric.Object | null>;
   selectedShapeRef: any;
-  syncShapeInStorage: (shape: fabric.Object) => void;
   setActiveElement: any;
 };
 
 export type CanvasObjectModified = {
   options: fabric.IEvent;
-  syncShapeInStorage: (shape: fabric.Object) => void;
 };
 
 export type CanvasPathCreated = {
   options: (fabric.IEvent & { path: CustomFabricObject<fabric.Path> }) | any;
-  syncShapeInStorage: (shape: fabric.Object) => void;
 };
 
 export type CanvasSelectionCreated = {
