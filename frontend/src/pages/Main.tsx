@@ -6,12 +6,24 @@ import React, { useEffect, useRef, useState } from "react";
 import { fabric } from "fabric";
 import {
   handleCanvasMouseDown,
+  handleCanvasMouseUp,
+  handleCanvasObjectModified,
+  handleCanvasObjectMoving,
+  handleCanvasObjectScaling,
+  handleCanvasSelectionCreated,
+  handleCanvasZoom,
+  handleCanvaseMouseMove,
+  handlePathCreated,
   handleResize,
   initializeFabric,
 } from "@/lib/canvas";
 import { ActiveElement } from "@/types/type";
 import { handleImageUpload } from "@/lib/shapes";
-import { handleDelete, handleKeyDown } from "@/lib/key-events";
+import {
+  handleDelete,
+  handleDeleteObject,
+  handleKeyDown,
+} from "@/lib/key-events";
 
 export default function Main() {
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -30,6 +42,8 @@ export default function Main() {
   useEffect(() => {
     const canvas = initializeFabric({ canvasRef, fabricRef });
 
+    // canvas.add(new fabric.IText("Tap to Type", { left: 50, top: 50 }));
+
     canvas.on("mouse:down", (options) => {
       handleCanvasMouseDown({
         options,
@@ -40,11 +54,40 @@ export default function Main() {
       });
     });
 
-    window.addEventListener("resize", () => {
-      handleResize({ canvas });
+    canvas?.on("object:moving", (options) => {
+      handleCanvasObjectMoving({
+        options,
+      });
     });
-  }, []);
 
+    canvas.on("mouse:wheel", (options) => {
+      handleCanvasZoom({
+        options,
+        canvas,
+      });
+    });
+
+    window.addEventListener("resize", () => {
+      handleResize({
+        canvas: fabricRef.current,
+      });
+    });
+
+    window.addEventListener("keydown", (e) => {
+      handleKeyDown({ e, canvas: fabricRef.current });
+    });
+
+    return () => {
+      canvas.dispose();
+
+      // remove the event listeners
+      window.removeEventListener("resize", () => {
+        handleResize({
+          canvas: null,
+        });
+      });
+    };
+  }, []);
 
   // const syncShapeInStorage = useMutation(({ storage }, object) => {
   //   // if the passed object is null, return
@@ -69,6 +112,7 @@ export default function Main() {
 
   const handleActiveElement = (elem: ActiveElement) => {
     setActiveElement(elem);
+    console.log(elem);
 
     switch (elem?.value) {
       // delete all the shapes from the canvas
@@ -104,6 +148,12 @@ export default function Main() {
           // disable the drawing mode of canvas
           fabricRef.current.isDrawingMode = false;
         }
+        break;
+
+      case "delete":
+        console.log(fabricRef);
+        handleDelete(fabricRef.current as fabric.Canvas);
+        // setActiveElement({ name: "", value: "", icon: "" });
         break;
 
       // for comments, do nothing
