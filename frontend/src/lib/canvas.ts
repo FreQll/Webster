@@ -59,8 +59,6 @@ export const handleCanvasMouseDown = ({
   // set canvas drawing mode to false
   canvas.isDrawingMode = false;
 
-  
-
   // if selected shape is freeform, set drawing mode to true and return
   if (selectedShapeRef.current === "freeform") {
     isDrawing.current = true;
@@ -102,6 +100,8 @@ export const handleCanvasMouseDown = ({
     if (shapeRef.current) {
       // add: http://fabricjs.com/docs/fabric.Canvas.html#add
       canvas.add(shapeRef.current);
+      console.log("Object added:", shapeRef.current);
+      console.log("Canvas objects:", canvas.getObjects());
     }
   }
 };
@@ -113,7 +113,6 @@ export const handleCanvaseMouseMove = ({
   isDrawing,
   selectedShapeRef,
   shapeRef,
-  syncShapeInStorage,
 }: CanvasMouseMove) => {
   // if selected shape is freeform, return
   if (!isDrawing.current) return;
@@ -159,6 +158,7 @@ export const handleCanvaseMouseMove = ({
         width: pointer.x - (shapeRef.current?.left || 0),
         height: pointer.y - (shapeRef.current?.top || 0),
       });
+      break;
 
     default:
       break;
@@ -169,9 +169,9 @@ export const handleCanvaseMouseMove = ({
   canvas.renderAll();
 
   // sync shape in storage
-  if (shapeRef.current?.objectId) {
-    syncShapeInStorage(shapeRef.current);
-  }
+  // if (shapeRef.current?.objectId) {
+  //   syncShapeInStorage(shapeRef.current);
+  // }
 };
 
 // handle mouse up event on canvas to stop drawing shapes
@@ -181,14 +181,12 @@ export const handleCanvasMouseUp = ({
   shapeRef,
   activeObjectRef,
   selectedShapeRef,
-  syncShapeInStorage,
   setActiveElement,
 }: CanvasMouseUp) => {
   isDrawing.current = false;
   if (selectedShapeRef.current === "freeform") return;
 
   // sync shape in storage as drawing is stopped
-  syncShapeInStorage(shapeRef.current);
 
   // set everything to null
   shapeRef.current = null;
@@ -206,23 +204,19 @@ export const handleCanvasMouseUp = ({
 // update shape in storage when object is modified
 export const handleCanvasObjectModified = ({
   options,
-  syncShapeInStorage,
 }: CanvasObjectModified) => {
   const target = options.target;
   if (!target) return;
 
-  if (target?.type == "activeSelection") {
-    // fix this
-  } else {
-    syncShapeInStorage(target);
-  }
+  // if (target?.type == "activeSelection") {
+  //   // fix this
+  // } else {
+  //   syncShapeInStorage(target);
+  // }
 };
 
 // update shape in storage when path is created when in freeform mode
-export const handlePathCreated = ({
-  options,
-  syncShapeInStorage,
-}: CanvasPathCreated) => {
+export const handlePathCreated = ({ options }: CanvasPathCreated) => {
   // get path object
   const path = options.path;
   if (!path) return;
@@ -233,7 +227,6 @@ export const handlePathCreated = ({
   });
 
   // sync shape in storage
-  syncShapeInStorage(path);
 };
 
 // check how object is moving on canvas and restrict it to canvas boundaries
