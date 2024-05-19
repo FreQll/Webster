@@ -17,7 +17,7 @@ import {
   handleResize,
   initializeFabric,
 } from "@/lib/canvas";
-import { ActiveElement } from "@/types/type";
+import { ActiveElement, Attributes } from "@/types/type";
 import { handleImageUpload } from "@/lib/shapes";
 import {
   handleDelete,
@@ -38,6 +38,17 @@ export default function Main() {
   const shapeRef = useRef<fabric.Object | null>(null);
   const isDrawing = useRef(false);
   const selectedShapeRef = useRef<string | null>(activeElement?.name || null);
+  const [elementAttributes, setElementAttributes] = useState<Attributes>({
+    width: "",
+    height: "",
+    fontSize: "",
+    fontFamily: "",
+    fontWeight: "",
+    fill: "#aabbcc",
+    stroke: "#aabbcc",
+  });
+  const isEditingRef = useRef(false);
+  const activeObjectRef = useRef<fabric.Object | null>(null);
 
   useEffect(() => {
     const canvas = initializeFabric({ canvasRef, fabricRef });
@@ -54,9 +65,35 @@ export default function Main() {
       });
     });
 
+    canvas.on("selection:created", (options) => {
+      handleCanvasSelectionCreated({
+        options,
+        isEditingRef,
+        setElementAttributes,
+      });
+    });
+
+    canvas.on("object:scaling", (options) => {
+      handleCanvasObjectScaling({
+        options,
+        setElementAttributes,
+      });
+    });
+
     canvas?.on("object:moving", (options) => {
       handleCanvasObjectMoving({
         options,
+      });
+    });
+
+    canvas.on("mouse:up", () => {
+      handleCanvasMouseUp({
+        canvas,
+        isDrawing,
+        shapeRef,
+        activeObjectRef,
+        selectedShapeRef,
+        setActiveElement,
       });
     });
 
@@ -64,6 +101,12 @@ export default function Main() {
       handleCanvasZoom({
         options,
         canvas,
+      });
+    });
+
+    canvas.on("object:modified", (options) => {
+      handleCanvasObjectModified({
+        options,
       });
     });
 
@@ -87,7 +130,7 @@ export default function Main() {
         });
       });
     };
-  }, []);
+  }, [canvasRef]);
 
   // const syncShapeInStorage = useMutation(({ storage }, object) => {
   //   // if the passed object is null, return
@@ -192,7 +235,13 @@ export default function Main() {
             <Live canvasRef={canvasRef} />
           </div>
           <div className="w-[15%]">
-            <RightPanel />
+            <RightPanel
+              elementAttributes={elementAttributes}
+              setElementAttributes={setElementAttributes}
+              fabricRef={fabricRef}
+              isEditingRef={isEditingRef}
+              activeObjectRef={activeObjectRef}
+            />
           </div>
         </section>
       </Container>

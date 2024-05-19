@@ -100,8 +100,8 @@ export const handleCanvasMouseDown = ({
     if (shapeRef.current) {
       // add: http://fabricjs.com/docs/fabric.Canvas.html#add
       canvas.add(shapeRef.current);
-      console.log("Object added:", shapeRef.current);
-      console.log("Canvas objects:", canvas.getObjects());
+      // console.log("Object added:", shapeRef.current);
+      // console.log("Canvas objects:", canvas.getObjects());
     }
   }
 };

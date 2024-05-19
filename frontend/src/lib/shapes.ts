@@ -131,7 +131,6 @@ export const modifyShape = ({
   property,
   value,
   activeObjectRef,
-  syncShapeInStorage,
 }: ModifyShape) => {
   const selectedElement = canvas.getActiveObject();
 
@@ -147,12 +146,11 @@ export const modifyShape = ({
   } else {
     if (selectedElement[property as keyof object] === value) return;
     selectedElement.set(property as keyof object, value);
+    console.log(selectedElement[property as keyof object]);
   }
 
   // set selectedElement to activeObjectRef
   activeObjectRef.current = selectedElement;
-
-  syncShapeInStorage(selectedElement);
 };
 
 export const bringElement = ({
