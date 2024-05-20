@@ -5,6 +5,7 @@ import bcrypt from "bcrypt";
 import { sendEmail } from "../tools/sendEmail.js";
 import { resetPasswordHTML } from "../public/emails/resetPasswordHTML.js";
 import { confirmEmailHTML } from "../public/emails/confirmEmailHTML.js";
+import { LoggedInHTML } from "../public/emails/loggedInHTML.js";
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
@@ -41,6 +42,12 @@ export const login = async (req, res) => {
     name: user.name,
     token,
   };
+
+  await sendEmail(
+    email,
+    "⚠️ Someone has logged into your account ⚠️",
+    LoggedInHTML(user.name, req.headers["user-agent"], new Date())
+  );
 
   return res.status(200).json(protectedUser);
 };

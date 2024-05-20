@@ -3,6 +3,7 @@ import { RightSidebarProps } from "@/types/type";
 import React, { useEffect, useMemo, useRef } from "react";
 import Color from "./settings/Color";
 import Text from "./settings/Text";
+// import { Export } from "./settings/Export";
 
 const RightPanel = ({
   elementAttributes,
@@ -58,6 +59,7 @@ const RightPanel = ({
           attributeType="stroke"
           handleInputChange={handleInputChange}
         />
+        {/* <Export /> */}
       </div>
     ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
