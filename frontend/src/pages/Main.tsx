@@ -24,6 +24,7 @@ import {
   handleDeleteObject,
   handleKeyDown,
 } from "@/lib/key-events";
+import { MenubarNavigation } from "@/components/MenubarNavigation";
 
 export default function Main() {
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -213,7 +214,8 @@ export default function Main() {
   return (
     <main className="h-full">
       <Container>
-        <section className="flex flex-row min-h-[calc(100vh-40px)] w-full justify-between">
+        <MenubarNavigation canvas={fabricRef.current} />
+        <section className="flex flex-row min-h-[calc(100vh-80px)] w-full justify-between">
           <div className="w-[15%]">
             <LeftPanel
               imageInputRef={imageInputRef}
