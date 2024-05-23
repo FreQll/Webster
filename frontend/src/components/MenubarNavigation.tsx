@@ -29,6 +29,11 @@ export const MenubarNavigation = ({
     setIsAlertOpen(false);
   };
 
+  const handleSaveToImage = () => {
+    canvas?.discardActiveObject().renderAll();
+    exportToImage();
+  };
+
   return (
     <Menubar>
       <MenubarMenu>
@@ -42,7 +47,7 @@ export const MenubarNavigation = ({
           <MenubarSub>
             <MenubarSubTrigger>Save</MenubarSubTrigger>
             <MenubarSubContent>
-              <MenubarItem onClick={exportToImage}>as Image</MenubarItem>
+              <MenubarItem onClick={handleSaveToImage}>as Image</MenubarItem>
               <MenubarItem onClick={() => saveToFile(canvas)}>
                 as Project File
               </MenubarItem>
