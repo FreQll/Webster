@@ -76,9 +76,11 @@ export const handlePaste = (canvas: fabric.Canvas) => {
 export const handleKeyDown = ({
   e,
   canvas,
+  syncStorage,
 }: {
   e: KeyboardEvent;
   canvas: fabric.Canvas | any;
+  syncStorage: () => void;
 }) => {
   // Check if the key pressed is ctrl/cmd + c (copy)
   if ((e?.ctrlKey || e?.metaKey) && e.keyCode === 67) {

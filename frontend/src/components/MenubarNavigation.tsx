@@ -19,8 +19,14 @@ import { useState } from "react";
 
 export const MenubarNavigation = ({
   canvas,
+  handleUndo,
+  handleRedo,
+  handleClearAll,
 }: {
   canvas: fabric.Canvas | null;
+  handleUndo: () => void;
+  handleRedo: () => void;
+  handleClearAll: () => void;
 }) => {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
@@ -39,7 +45,7 @@ export const MenubarNavigation = ({
       <MenubarMenu>
         <MenubarTrigger>File</MenubarTrigger>
         <MenubarContent>
-          <MenubarItem>New File</MenubarItem>
+          <MenubarItem onClick={handleClearAll}>New File</MenubarItem>
           <MenubarItem onClick={() => setIsAlertOpen(!isAlertOpen)}>
             Load
           </MenubarItem>
@@ -62,10 +68,10 @@ export const MenubarNavigation = ({
       <MenubarMenu>
         <MenubarTrigger>Edit</MenubarTrigger>
         <MenubarContent>
-          <MenubarItem>
+          <MenubarItem onClick={handleUndo}>
             Undo <MenubarShortcut>⌘Z</MenubarShortcut>
           </MenubarItem>
-          <MenubarItem>
+          <MenubarItem onClick={handleRedo}>
             Redo <MenubarShortcut>⇧⌘Z</MenubarShortcut>
           </MenubarItem>
           <MenubarSeparator />

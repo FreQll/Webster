@@ -145,10 +145,12 @@ export type CanvasMouseUp = {
   activeObjectRef: React.MutableRefObject<fabric.Object | null>;
   selectedShapeRef: any;
   setActiveElement: any;
+  syncStorage: () => void;
 };
 
 export type CanvasObjectModified = {
   options: fabric.IEvent;
+  syncStorage: () => void;
 };
 
 export type CanvasPathCreated = {
