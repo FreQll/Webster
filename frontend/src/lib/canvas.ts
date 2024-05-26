@@ -13,23 +13,44 @@ import {
 } from "@/types/type";
 import { defaultNavElement } from "@/lib/constants";
 import { createSpecificShape } from "./shapes";
-
 // initialize fabric canvas
 export const initializeFabric = ({
   fabricRef,
   canvasRef,
+  reduxCanvas,
+  setCanvas,
 }: {
   fabricRef: React.MutableRefObject<fabric.Canvas | null>;
   canvasRef: React.MutableRefObject<HTMLCanvasElement | null>;
+  reduxCanvas: any;
+  setCanvas: (canvas: any) => void;
 }) => {
   // get canvas element
   const canvasElement = document.getElementById("canvas");
+
+  if (reduxCanvas) {
+    const canvas = new fabric.Canvas(canvasRef.current, {
+      width: canvasElement?.clientWidth,
+      height: canvasElement?.clientHeight,
+    });
+
+    canvas.loadFromJSON(reduxCanvas, () => {
+      canvas.renderAll();
+    });
+
+    setCanvas(JSON.stringify(canvas));
+    fabricRef.current = canvas;
+    return canvas;
+  }
 
   // create fabric canvas
   const canvas = new fabric.Canvas(canvasRef.current, {
     width: canvasElement?.clientWidth,
     height: canvasElement?.clientHeight,
   });
+
+
+  setCanvas(JSON.stringify(canvas));
 
   // set canvas reference to fabricRef so we can use it later anywhere outside canvas listener
   fabricRef.current = canvas;
@@ -95,6 +116,8 @@ export const handleCanvasMouseDown = ({
       selectedShapeRef.current,
       pointer as any
     );
+
+    console.log(shapeRef.current);
 
     // if shapeRef is not null, add it to canvas
     if (shapeRef.current) {
@@ -182,11 +205,13 @@ export const handleCanvasMouseUp = ({
   activeObjectRef,
   selectedShapeRef,
   setActiveElement,
+  syncStorage,
 }: CanvasMouseUp) => {
   isDrawing.current = false;
   if (selectedShapeRef.current === "freeform") return;
 
   // sync shape in storage as drawing is stopped
+  syncStorage();
 
   // set everything to null
   shapeRef.current = null;
@@ -204,9 +229,17 @@ export const handleCanvasMouseUp = ({
 // update shape in storage when object is modified
 export const handleCanvasObjectModified = ({
   options,
+  syncStorage,
 }: CanvasObjectModified) => {
   const target = options.target;
   if (!target) return;
+
+  // sync shape in storage
+  if (target?.type === "activeSelection") {
+    // fix this
+  } else {
+    syncStorage();
+  }
 
   // if (target?.type == "activeSelection") {
   //   // fix this

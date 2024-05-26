@@ -1,9 +1,27 @@
+import axios from "@/api/axios";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export const saveCanvas = async (canvas: fabric.Canvas, userId: string) => {
+  const data = JSON.stringify(canvas);
+
+  const canvasElem = document.querySelector("canvas");
+  if (!canvasElem) return;
+  const dataURL = canvasElem.toDataURL("image/jpg", 1.0);
+  console.log("!!!dataURL!!!");
+  console.log(dataURL);
+
+  await axios.post("/canvas/create", {
+    canvasJSON: data,
+    userId,
+    name: "Untitled",
+    imageURL: dataURL,
+  });
+};
 
 export const exportToImage = () => {
   const canvas = document.querySelector("canvas");

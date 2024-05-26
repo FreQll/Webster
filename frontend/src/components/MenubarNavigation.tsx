@@ -13,17 +13,23 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import { exportToImage, loadFile, saveToFile } from "@/lib/utils";
+import { exportToImage, loadFile, saveCanvas, saveToFile } from "@/lib/utils";
 import { Alert } from "./Alert";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/UserSlice";
 import axios, { POST_CONFIG } from "@/api/axios";
-import { logout, selectUser } from "@/store/UserSlice";
-import { useSelector } from 'react-redux';
 
 export const MenubarNavigation = ({
   canvas,
+  handleUndo,
+  handleRedo,
+  handleClearAll,
 }: {
   canvas: fabric.Canvas | null;
+  handleUndo: () => void;
+  handleRedo: () => void;
+  handleClearAll: () => void;
 }) => {
   const user = useSelector(selectUser);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -36,6 +42,12 @@ export const MenubarNavigation = ({
   const handleSaveToImage = () => {
     canvas?.discardActiveObject().renderAll();
     exportToImage();
+    saveCanvas(canvas, user.id);
+  };
+
+  const handleSaveToFile = () => {
+    saveToFile(canvas);
+    saveCanvas(canvas, user.id);
   };
 
   const handleSaveProject = async () => {
@@ -55,7 +67,7 @@ export const MenubarNavigation = ({
       <MenubarMenu>
         <MenubarTrigger>File</MenubarTrigger>
         <MenubarContent>
-          <MenubarItem>New File</MenubarItem>
+          <MenubarItem onClick={handleClearAll}>New File</MenubarItem>
           <MenubarItem onClick={() => setIsAlertOpen(!isAlertOpen)}>
             Load
           </MenubarItem>
@@ -67,8 +79,10 @@ export const MenubarNavigation = ({
           <MenubarSub>
             <MenubarSubTrigger>Save as</MenubarSubTrigger>
             <MenubarSubContent>
-              <MenubarItem onClick={handleSaveToImage}>Image</MenubarItem>
-              <MenubarItem onClick={() => saveToFile(canvas)}>Project File</MenubarItem>
+              <MenubarItem onClick={handleSaveToImage}>as Image</MenubarItem>
+              <MenubarItem onClick={handleSaveToFile}>
+                as Project File
+              </MenubarItem>
             </MenubarSubContent>
           </MenubarSub>
           <MenubarSeparator />
@@ -80,10 +94,10 @@ export const MenubarNavigation = ({
       <MenubarMenu>
         <MenubarTrigger>Edit</MenubarTrigger>
         <MenubarContent>
-          <MenubarItem>
+          <MenubarItem onClick={handleUndo}>
             Undo <MenubarShortcut>⌘Z</MenubarShortcut>
           </MenubarItem>
-          <MenubarItem>
+          <MenubarItem onClick={handleRedo}>
             Redo <MenubarShortcut>⇧⌘Z</MenubarShortcut>
           </MenubarItem>
           <MenubarSeparator />

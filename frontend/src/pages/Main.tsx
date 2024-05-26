@@ -21,10 +21,13 @@ import { ActiveElement, Attributes } from "@/types/type";
 import { handleImageUpload } from "@/lib/shapes";
 import {
   handleDelete,
-  handleDeleteObject,
+//  handleDeleteObject,
   handleKeyDown,
 } from "@/lib/key-events";
 import { MenubarNavigation } from "@/components/MenubarNavigation";
+import { setCanvas, setUndo, setRedo, updateCanvas, undoF, redoF, selectCanvas, clearAll } from "@/store/CanvasSlice";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 export default function Main() {
   const imageInputRef = useRef<HTMLInputElement>(null);
@@ -51,8 +54,14 @@ export default function Main() {
   const isEditingRef = useRef(false);
   const activeObjectRef = useRef<fabric.Object | null>(null);
 
+  const reduxCanvas = useSelector((state: any) => state.canvas.canvas);
+
+  const dispatch = useDispatch();
+
   useEffect(() => {
-    const canvas = initializeFabric({ canvasRef, fabricRef });
+    const canvas = initializeFabric({ canvasRef, fabricRef, reduxCanvas, 
+      setCanvas: (canvas: any) => dispatch(setCanvas(canvas)),
+    });
 
     // canvas.add(new fabric.IText("Tap to Type", { left: 50, top: 50 }));
 
@@ -95,6 +104,7 @@ export default function Main() {
         activeObjectRef,
         selectedShapeRef,
         setActiveElement,
+        syncStorage,
       });
     });
 
@@ -108,6 +118,7 @@ export default function Main() {
     canvas.on("object:modified", (options) => {
       handleCanvasObjectModified({
         options,
+        syncStorage,
       });
     });
 
@@ -118,10 +129,14 @@ export default function Main() {
     });
 
     window.addEventListener("keydown", (e) => {
-      handleKeyDown({ e, canvas: fabricRef.current });
+      handleKeyDown({ e,
+        canvas: fabricRef.current,
+        syncStorage,
+       });
     });
 
     return () => {
+
       canvas.dispose();
 
       // remove the event listeners
@@ -133,26 +148,20 @@ export default function Main() {
     };
   }, [canvasRef]);
 
-  // const syncShapeInStorage = useMutation(({ storage }, object) => {
-  //   // if the passed object is null, return
-  //   if (!object) return;
-  //   const { objectId } = object;
+  const syncStorage = () => {
+    console.log("SYNCING STORAGE");
+    dispatch(updateCanvas(JSON.stringify(fabricRef.current)));
+  };
 
-  //   /**
-  //    * Turn Fabric object (kclass) into JSON format so that we can store it in the
-  //    * key-value store.
-  //    */
-  //   const shapeData = object.toJSON();
-  //   shapeData.objectId = objectId;
-
-  //   const canvasObjects = storage.get("canvasObjects");
-  //   /**
-  //    * set is a method provided by Liveblocks that allows you to set a value
-  //    *
-  //    * set: https://liveblocks.io/docs/api-reference/liveblocks-client#LiveMap.set
-  //    */
-  //   canvasObjects.set(objectId, shapeData);
-  // }, []);
+  useEffect(() => {
+    if (!reduxCanvas) {
+      fabricRef.current?.clear();
+      return;
+    }
+    fabricRef.current?.loadFromJSON(reduxCanvas, () => {
+      fabricRef.current?.renderAll();
+    });
+  }, [reduxCanvas]);
 
   const handleActiveElement = (elem: ActiveElement) => {
     setActiveElement(elem);
@@ -211,10 +220,22 @@ export default function Main() {
     }
   };
 
+  const handleUndo = () => {
+    dispatch(undoF());
+  }
+
+  const handleRedo = () => {
+    dispatch(redoF());
+  }
+
+  const handleClearAll = () => {
+    dispatch(clearAll());
+  }
+
   return (
     <main className="h-full">
       <Container>
-        <MenubarNavigation canvas={fabricRef.current} />
+        <MenubarNavigation canvas={fabricRef.current} handleUndo={handleUndo} handleRedo={handleRedo} handleClearAll={handleClearAll} />
         <section className="flex flex-row min-h-[calc(100vh-80px)] w-full justify-between">
           <div className="w-[15%]">
             <LeftPanel
