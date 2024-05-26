@@ -13,9 +13,11 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import { exportToImage, loadFile, saveToFile } from "@/lib/utils";
+import { exportToImage, loadFile, saveCanvas, saveToFile } from "@/lib/utils";
 import { Alert } from "./Alert";
 import { useState } from "react";
+import { useSelector } from "react-redux";
+import { selectUser } from "@/store/UserSlice";
 
 export const MenubarNavigation = ({
   canvas,
@@ -29,6 +31,7 @@ export const MenubarNavigation = ({
   handleClearAll: () => void;
 }) => {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const user = useSelector(selectUser);
 
   const handleLoadFile = () => {
     loadFile(canvas);
@@ -38,6 +41,12 @@ export const MenubarNavigation = ({
   const handleSaveToImage = () => {
     canvas?.discardActiveObject().renderAll();
     exportToImage();
+    saveCanvas(canvas, user.id);
+  };
+
+  const handleSaveToFile = () => {
+    saveToFile(canvas);
+    saveCanvas(canvas, user.id);
   };
 
   return (
@@ -54,7 +63,7 @@ export const MenubarNavigation = ({
             <MenubarSubTrigger>Save</MenubarSubTrigger>
             <MenubarSubContent>
               <MenubarItem onClick={handleSaveToImage}>as Image</MenubarItem>
-              <MenubarItem onClick={() => saveToFile(canvas)}>
+              <MenubarItem onClick={handleSaveToFile}>
                 as Project File
               </MenubarItem>
             </MenubarSubContent>
