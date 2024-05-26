@@ -10,11 +10,21 @@ import { Provider } from "react-redux";
 import store from "./store/index.ts";
 import Main from "./pages/Main.tsx";
 import ResetPassword from "./pages/ResetPassword.tsx";
+import UserProfile from "./pages/UserProfile.tsx";
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
-    children: [{ path: "/", element: <Main /> }],
+    children: [
+      { 
+        path: "/", 
+        element: <Main /> 
+      },
+      {
+        path: "/profile",
+        element: <UserProfile />
+      }
+    ],
   },
   { path: "signup", element: <SignUp /> },
   { path: "login", element: <SignIn /> },

@@ -19,7 +19,7 @@ export const exportToImage = () => {
   link.click();
 };
 
-export const loadFile = (canvas: fabric.Canvas) => {
+export const loadFile = (canvas: fabric.Canvas | null) => {
   console.log(canvas + "canvas");
   // Clear the canvas if it exists
   if (canvas) {
@@ -49,7 +49,8 @@ export const loadFile = (canvas: fabric.Canvas) => {
   input.click();
 };
 
-export const saveToFile = (canvas: fabric.Canvas) => {
+export const saveToFile = (canvas: fabric.Canvas | null) => {
+  if (!canvas) return;
   const data = JSON.stringify(canvas);
   const blob = new Blob([data], { type: "application/json" });
   const url = URL.createObjectURL(blob);

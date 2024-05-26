@@ -16,12 +16,16 @@ import {
 import { exportToImage, loadFile, saveToFile } from "@/lib/utils";
 import { Alert } from "./Alert";
 import { useState } from "react";
+import axios, { POST_CONFIG } from "@/api/axios";
+import { logout, selectUser } from "@/store/UserSlice";
+import { useSelector } from 'react-redux';
 
 export const MenubarNavigation = ({
   canvas,
 }: {
   canvas: fabric.Canvas | null;
 }) => {
+  const user = useSelector(selectUser);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   const handleLoadFile = () => {
@@ -34,6 +38,18 @@ export const MenubarNavigation = ({
     exportToImage();
   };
 
+  const handleSaveProject = async () => {
+    const data = {
+      name: '1',
+      description: '1',
+      userId: user.id,
+      canvasJSON: JSON.stringify(canvas),
+    };
+    const resp = await axios.post('/canvas/create', data, POST_CONFIG);
+    console.log(resp);
+    
+  }
+
   return (
     <Menubar>
       <MenubarMenu>
@@ -44,13 +60,15 @@ export const MenubarNavigation = ({
             Load
           </MenubarItem>
           <MenubarSeparator />
+          <MenubarItem onClick={handleSaveProject}>
+            Save Project <MenubarShortcut>⌘ Shift S</MenubarShortcut>
+          </MenubarItem>
+          <MenubarSeparator />
           <MenubarSub>
-            <MenubarSubTrigger>Save</MenubarSubTrigger>
+            <MenubarSubTrigger>Save as</MenubarSubTrigger>
             <MenubarSubContent>
-              <MenubarItem onClick={handleSaveToImage}>as Image</MenubarItem>
-              <MenubarItem onClick={() => saveToFile(canvas)}>
-                as Project File
-              </MenubarItem>
+              <MenubarItem onClick={handleSaveToImage}>Image</MenubarItem>
+              <MenubarItem onClick={() => saveToFile(canvas)}>Project File</MenubarItem>
             </MenubarSubContent>
           </MenubarSub>
           <MenubarSeparator />

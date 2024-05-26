@@ -40,8 +40,7 @@ export const getUserCanvases = async (req, res) => {
 
 export const createCanvas = async (req, res) => {
   const { name, description, userId, canvasJSON } = req.body;
-
-  //
+  console.log(name);
 
   if (!name || !userId || !canvasJSON) {
     return res.status(400).json({ message: "Missing parameters." });

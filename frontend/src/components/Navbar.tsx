@@ -33,7 +33,7 @@ export const Navbar = () => {
       <div className="flex flex-row gap-2 items-center">
         {user.id ? (
           <div>
-            {user.name}
+            <Link to='/profile'>{user.name}</Link>
             <Button onClick={handleLogout}>Logout</Button>
           </div>
         ) : (

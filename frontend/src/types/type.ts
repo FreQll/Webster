@@ -184,3 +184,13 @@ export type CursorChatProps = {
     }>
   ) => void;
 };
+
+export type Canvas = {
+  name: string,
+  description: string,
+  canvasJSON: string,
+  createdAt: Date,
+  id: string,
+  updatedAt: Date,
+  userId: string,
+}
