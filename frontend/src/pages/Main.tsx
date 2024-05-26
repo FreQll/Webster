@@ -55,7 +55,6 @@ export default function Main() {
   const activeObjectRef = useRef<fabric.Object | null>(null);
 
   const reduxCanvas = useSelector((state: any) => state.canvas.canvas);
-
   const dispatch = useDispatch();
 
   useEffect(() => {

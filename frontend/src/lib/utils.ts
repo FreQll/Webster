@@ -1,4 +1,5 @@
 import axios from "@/api/axios";
+import { Canvas } from "@/types/type";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -12,14 +13,37 @@ export const saveCanvas = async (canvas: fabric.Canvas, userId: string) => {
   const canvasElem = document.querySelector("canvas");
   if (!canvasElem) return;
   const dataURL = canvasElem.toDataURL("image/jpg", 1.0);
-  console.log("!!!dataURL!!!");
-  console.log(dataURL);
 
   await axios.post("/canvas/create", {
     canvasJSON: data,
     userId,
     name: "Untitled",
     imageURL: dataURL,
+  });
+};
+
+export const updateCanvasInfo =  async (canvasJson: fabric.Canvas | string, canvasId: string, title?: string, desc?: string) => {
+  const data = JSON.stringify(canvasJson);
+
+  await axios.patch(`/canvas/update/${canvasId}`, {
+    canvasJSON: data,
+    name: title,
+    description: desc
+  });
+}
+
+export const updateCanvas = async (canvasJson: fabric.Canvas | string, canvasId: string, title?: string, desc?: string) => {
+  const data = JSON.stringify(canvasJson);
+
+  const canvasElem = document.querySelector("canvas");
+  if (!canvasElem) return;
+  const dataURL = canvasElem.toDataURL("image/jpg", 1.0);
+
+  await axios.patch(`/canvas/update/${canvasId}`, {
+    canvasJSON: data,
+    imageURL: dataURL,
+    name: title,
+    description: desc
   });
 };
 

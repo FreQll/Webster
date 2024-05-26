@@ -195,4 +195,5 @@ export type Canvas = {
   id: string,
   updatedAt: Date,
   userId: string,
+  imageURL: string,
 }

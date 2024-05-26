@@ -28,7 +28,7 @@ export const initializeFabric = ({
   // get canvas element
   const canvasElement = document.getElementById("canvas");
 
-  if (reduxCanvas) {
+  if (reduxCanvas && reduxCanvas != 'null') {
     const canvas = new fabric.Canvas(canvasRef.current, {
       width: canvasElement?.clientWidth,
       height: canvasElement?.clientHeight,
@@ -42,6 +42,8 @@ export const initializeFabric = ({
     fabricRef.current = canvas;
     return canvas;
   }
+
+  
 
   // create fabric canvas
   const canvas = new fabric.Canvas(canvasRef.current, {

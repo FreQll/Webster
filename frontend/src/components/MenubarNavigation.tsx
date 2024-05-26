@@ -13,12 +13,13 @@ import {
   MenubarSubTrigger,
   MenubarTrigger,
 } from "@/components/ui/menubar";
-import { exportToImage, loadFile, saveCanvas, saveToFile } from "@/lib/utils";
+import { exportToImage, loadFile, saveCanvas, saveToFile, updateCanvas } from "@/lib/utils";
 import { Alert } from "./Alert";
 import { useState } from "react";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/store/UserSlice";
-import axios, { POST_CONFIG } from "@/api/axios";
+import axios, { GET_CONFIG, POST_CONFIG } from "@/api/axios";
+import { Canvas } from "@/types/type";
 
 export const MenubarNavigation = ({
   canvas,
@@ -33,6 +34,7 @@ export const MenubarNavigation = ({
 }) => {
   const user = useSelector(selectUser);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const selectedCanvas = useSelector((state: any) => state.canvas.canvas);
 
   const handleLoadFile = () => {
     loadFile(canvas);
@@ -40,26 +42,37 @@ export const MenubarNavigation = ({
   };
 
   const handleSaveToImage = () => {
-    canvas?.discardActiveObject().renderAll();
-    exportToImage();
-    saveCanvas(canvas, user.id);
+    if (canvas) {
+      canvas.discardActiveObject().renderAll();
+      exportToImage();
+      saveCanvas(canvas, user.id);
+    }
   };
 
-  const handleSaveToFile = () => {
-    saveToFile(canvas);
-    saveCanvas(canvas, user.id);
+  const handleSaveToFile = async () => {
+    if (canvas) {
+      saveToFile(canvas);
+    }
   };
 
   const handleSaveProject = async () => {
-    const data = {
-      name: '1',
-      description: '1',
-      userId: user.id,
-      canvasJSON: JSON.stringify(canvas),
-    };
-    const resp = await axios.post('/canvas/create', data, POST_CONFIG);
-    console.log(resp);
-    
+    const resp = await axios.get(`/canvas/user/${user.id}`, GET_CONFIG);
+    if (resp.status === 200 && canvas) {
+      console.log(resp);
+      
+      const project = resp.data.filter((canvas: Canvas) => {
+        console.log(JSON.parse(selectedCanvas?.canvas));
+        console.log(JSON.parse(canvas.canvasJSON));
+        
+        return JSON.parse(canvas.canvasJSON) === JSON.parse(selectedCanvas?.canvas);
+      });
+      
+      if (project.length > 0) {
+        updateCanvas(canvas, project.id);
+      } else {
+        saveCanvas(canvas, user.id);
+      }
+    }
   }
 
   return (
