@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Label } from "../ui/label";
 import { HexColorPicker } from "react-colorful";
+import { Attributes } from "@/types/type";
 
 type Props = {
   inputRef: any;
@@ -34,22 +35,16 @@ export const Color = ({
     <div className="flex flex-col gap-3  p-5">
       <h3 className="text-[12px] uppercase">{placeholder}</h3>
       <div
-        className="flex items-center gap-2 "
+        className="flex items-center gap-2 w-full"
         onClick={() => inputRef.current.click()}
       >
-        {/* <input
-          type="color"
-          value={attribute}
-          ref={inputRef}
-          onChange={(e) => handleInputChange(attributeType, e.target.value)}
-        /> */}
-        <div ref={inputRef}>
-          <HexColorPicker color={attribute} onChange={handleColorChange} />
+        <div className="w-full" ref={inputRef}>
+          <HexColorPicker
+            className="w-full"
+            color={attribute}
+            onChange={handleColorChange}
+          />
         </div>
-        {/* <Label className="flex-1">{attribute}</Label>
-      <Label className="flex h-6 w-8 items-center justify-center bg-primary-grey-100 text-[10px] leading-3">
-        90%
-      </Label> */}
       </div>
     </div>
   );

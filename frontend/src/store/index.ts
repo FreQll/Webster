@@ -36,7 +36,11 @@ const store = configureStore({
   },
   preloadedState: {
     user: preloadedState,
-    canvas: loadCanvasFromLocalStorage() || { canvas: null, undo: [], redo: [] },
+    canvas: loadCanvasFromLocalStorage() || {
+      canvas: null,
+      undo: [],
+      redo: [],
+    },
   },
 });
 

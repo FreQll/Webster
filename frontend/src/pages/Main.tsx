@@ -257,7 +257,7 @@ export default function Main() {
           handleRedo={handleRedo}
           handleClearAll={handleClearAll}
         />
-        <section className="flex flex-row min-h-[calc(100vh-80px)] w-full justify-between">
+        <section className="flex flex-row min-h-[calc(100vh-40px)] w-full justify-between">
           <div className="w-[3%]">
             <LeftPanel
               imageInputRef={imageInputRef}

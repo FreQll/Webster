@@ -13,18 +13,18 @@ import ResetPassword from "./pages/ResetPassword.tsx";
 import UserProfile from "./pages/UserProfile.tsx";
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/profile",
     element: <Layout />,
     children: [
-      { 
-        path: "/", 
-        element: <Main /> 
-      },
       {
         path: "/profile",
-        element: <UserProfile />
-      }
+        element: <UserProfile />,
+      },
     ],
+  },
+  {
+    path: "/",
+    element: <Main />,
   },
   { path: "signup", element: <SignUp /> },
   { path: "login", element: <SignIn /> },

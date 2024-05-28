@@ -61,8 +61,13 @@ export const canvasSlice = createSlice({
       if (state.undo.length === 0) {
         return;
       }
-      state.redo.push(state.canvas);
-      state.canvas = state.undo.pop();
+      try {
+        state.redo.push(state.canvas);
+        state.canvas = state.undo.pop();
+      } catch (e) {
+        state.undo = [];
+        state.redo = [];
+      }
       localStorage.setItem("canvas", JSON.stringify(state));
     },
     redoF: (state) => {
@@ -70,14 +75,27 @@ export const canvasSlice = createSlice({
       if (state.redo.length === 0) {
         return;
       }
-      state.undo.push(state.canvas);
-      state.canvas = state.redo.pop();
+      try {
+        state.undo.push(state.canvas);
+        state.canvas = state.redo.pop();
+      } catch (e) {
+        state.undo = [];
+        state.redo = [];
+      }
       localStorage.setItem("canvas", JSON.stringify(state));
-    }
+    },
   },
 });
 
-export const { setCanvas, setUndo, setRedo, clearAll, updateCanvas, undoF, redoF, } = canvasSlice.actions;
+export const {
+  setCanvas,
+  setUndo,
+  setRedo,
+  clearAll,
+  updateCanvas,
+  undoF,
+  redoF,
+} = canvasSlice.actions;
 
 export const selectCanvas = (state: any) => state.canvas.canvas;
 
