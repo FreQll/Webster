@@ -23,36 +23,38 @@ const ShapesMenu = ({
     <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild className="no-ring">
-          {/* <img
-              src={isDropdownElem ? activeElement.icon : item.icon}
-              alt={item.name}
-              className={isDropdownElem ? "invert" : ""}
-            /> */}
-          <ShapesIcon
+          <img
+            src={isDropdownElem ? activeElement.icon : item.icon}
+            alt={item.name}
+            className={isDropdownElem ? "" : "invert "}
+            width={20}
+            height={20}
+          />
+          {/* <ShapesIcon
             className="w-[20px] h-[20px]"
             onClick={() => handleActiveElement(item)}
-          />
+          /> */}
         </DropdownMenuTrigger>
 
-        <DropdownMenuContent className="mt-5 flex flex-col gap-y-1 border-none bg-primary-black py-4 text-white">
+        <DropdownMenuContent className=" flex flex-col gap-y-1 border-none   py-4 text-white bg-gray-100">
           {item.value.map((elem) => (
             <Button
               key={elem?.name}
               onClick={() => {
                 handleActiveElement(elem);
               }}
-              className={`flex h-fit justify-between gap-10 rounded-none px-5 py-3 focus:border-none ${
+              className={` transition-colors flex h-fit justify-between gap-10 rounded-none bg-gray-100 px-5 py-3 focus:border-none ${
                 activeElement.value === elem?.value
-                  ? "bg-primary-green"
-                  : "hover:bg-primary-grey-200"
+                  ? "bg-gray-500"
+                  : "hover:bg-gray-200"
               }`}
             >
               <div className="group flex items-center gap-2">
                 <img
                   src={elem?.icon as string}
                   alt={elem?.name as string}
-                  width={20}
-                  height={20}
+                  width={24}
+                  height={24}
                   className={
                     activeElement.value === elem?.value ? "invert" : ""
                   }
@@ -60,8 +62,8 @@ const ShapesMenu = ({
                 <p
                   className={`text-sm  ${
                     activeElement.value === elem?.value
-                      ? "text-primary-black"
-                      : "text-white"
+                      ? "text-black"
+                      : "text-gray-500"
                   }`}
                 >
                   {elem?.name}

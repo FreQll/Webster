@@ -21,11 +21,20 @@ import { ActiveElement, Attributes } from "@/types/type";
 import { handleImageUpload } from "@/lib/shapes";
 import {
   handleDelete,
-//  handleDeleteObject,
+  //  handleDeleteObject,
   handleKeyDown,
 } from "@/lib/key-events";
 import { MenubarNavigation } from "@/components/MenubarNavigation";
-import { setCanvas, setUndo, setRedo, updateCanvas, undoF, redoF, selectCanvas, clearAll } from "@/store/CanvasSlice";
+import {
+  setCanvas,
+  setUndo,
+  setRedo,
+  updateCanvas,
+  undoF,
+  redoF,
+  selectCanvas,
+  clearAll,
+} from "@/store/CanvasSlice";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
 
@@ -51,6 +60,8 @@ export default function Main() {
     fill: "#aabbcc",
     stroke: "#aabbcc",
   });
+
+  console.log(elementAttributes, "elementAttributes");
   const isEditingRef = useRef(false);
   const activeObjectRef = useRef<fabric.Object | null>(null);
 
@@ -58,7 +69,11 @@ export default function Main() {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const canvas = initializeFabric({ canvasRef, fabricRef, reduxCanvas, 
+    console.log(localStorage.getItem("canvas"));
+    const canvas = initializeFabric({
+      canvasRef,
+      fabricRef,
+      reduxCanvas,
       setCanvas: (canvas: any) => dispatch(setCanvas(canvas)),
     });
 
@@ -128,14 +143,16 @@ export default function Main() {
     });
 
     window.addEventListener("keydown", (e) => {
-      handleKeyDown({ e,
-        canvas: fabricRef.current,
-        syncStorage,
-       });
+      handleKeyDown({ e, canvas: fabricRef.current, syncStorage });
     });
 
-    return () => {
+    if (localStorage.getItem("canvas")) {
+      canvas.loadFromJSON(localStorage.getItem("canvas"), () => {
+        canvas.renderAll();
+      });
+    }
 
+    return () => {
       canvas.dispose();
 
       // remove the event listeners
@@ -221,22 +238,27 @@ export default function Main() {
 
   const handleUndo = () => {
     dispatch(undoF());
-  }
+  };
 
   const handleRedo = () => {
     dispatch(redoF());
-  }
+  };
 
   const handleClearAll = () => {
     dispatch(clearAll());
-  }
+  };
 
   return (
     <main className="h-full">
       <Container>
-        <MenubarNavigation canvas={fabricRef.current} handleUndo={handleUndo} handleRedo={handleRedo} handleClearAll={handleClearAll} />
+        <MenubarNavigation
+          canvas={fabricRef.current}
+          handleUndo={handleUndo}
+          handleRedo={handleRedo}
+          handleClearAll={handleClearAll}
+        />
         <section className="flex flex-row min-h-[calc(100vh-80px)] w-full justify-between">
-          <div className="w-[15%]">
+          <div className="w-[3%]">
             <LeftPanel
               imageInputRef={imageInputRef}
               activeElement={activeElement}
@@ -253,7 +275,7 @@ export default function Main() {
               handleActiveElement={handleActiveElement}
             />
           </div>
-          <div className="w-[70%]">
+          <div className="w-[82%]">
             <Live canvasRef={canvasRef} />
           </div>
           <div className="w-[15%]">

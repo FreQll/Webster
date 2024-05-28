@@ -17,7 +17,7 @@ const LeftPanel = ({
       value.some((val) => val?.value === activeElement?.value));
 
   return (
-    <div className="flex flex-col border-t sticky left-0 h-full max-sm:hidden min-w-[227px] select-none overflow-y-auto pb-20 bg-slate-400">
+    <div className="flex flex-col border-t sticky left-0 h-full max-sm:hidden select-none overflow-y-auto pb-20 bg-gray-200 text-white fill-white">
       <ul className="flex flex-col">
         {navElements.map((item: ActiveElement | any) => (
           <li
@@ -26,11 +26,9 @@ const LeftPanel = ({
               if (Array.isArray(item.value)) return;
               handleActiveElement(item);
             }}
-            className={`group px-2.5 py-5 flex justify-center items-center
+            className={`group px-2.5 py-5 flex justify-center items-center w-full h-full cursor-pointer
             ${
-              isActive(item.value)
-                ? "bg-primary-green"
-                : "hover:bg-primary-grey-200"
+              isActive(item.value) ? "bg-gray-500" : "hover:bg-primary-grey-200"
             }
             `}
           >
@@ -60,7 +58,7 @@ const LeftPanel = ({
                 alt={item.name}
                 width={20}
                 height={20}
-                className={isActive(item.value) ? "invert" : ""}
+                className={isActive(item.value) ? " " : "invert"}
               />
             )}
           </li>

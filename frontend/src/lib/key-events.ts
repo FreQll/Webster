@@ -1,3 +1,4 @@
+import { setCanvas } from "@/store/CanvasSlice";
 import { CustomFabricObject } from "@/types/type";
 import { fabric } from "fabric";
 import { v4 as uuidv4 } from "uuid";
@@ -18,8 +19,11 @@ export const handleDelete = (canvas: fabric.Canvas) => {
     });
   }
 
+  setCanvas(canvas.toJSON());
+  console.log(canvas.toJSON() + "canvas.toJSON()");
+
   canvas.discardActiveObject();
-  canvas.requestRenderAll();
+  canvas.renderAll();
 };
 
 export const handleCopy = (canvas: fabric.Canvas) => {
