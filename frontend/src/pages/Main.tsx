@@ -61,23 +61,32 @@ export default function Main() {
     stroke: "#aabbcc",
   });
 
-  console.log(elementAttributes, "elementAttributes");
+  // console.log(elementAttributes, "elementAttributes");
   const isEditingRef = useRef(false);
   const activeObjectRef = useRef<fabric.Object | null>(null);
 
   const reduxCanvas = useSelector((state: any) => state.canvas.canvas);
   const dispatch = useDispatch();
 
+  const handleUndo = () => {
+    dispatch(undoF());
+  };
+
+  const handleRedo = () => {
+    dispatch(redoF());
+  };
+
+  const handleClearAll = () => {
+    dispatch(clearAll());
+  };
+
   useEffect(() => {
-    console.log(localStorage.getItem("canvas"));
     const canvas = initializeFabric({
       canvasRef,
       fabricRef,
       reduxCanvas,
       setCanvas: (canvas: any) => dispatch(setCanvas(canvas)),
     });
-
-    // canvas.add(new fabric.IText("Tap to Type", { left: 50, top: 50 }));
 
     canvas.on("mouse:down", (options) => {
       handleCanvasMouseDown({
@@ -142,9 +151,23 @@ export default function Main() {
       });
     });
 
-    window.addEventListener("keydown", (e) => {
-      handleKeyDown({ e, canvas: fabricRef.current, syncStorage });
-    });
+    // window.addEventListener("keydown", (e) => {
+    //   handleKeyDown({
+    //     e,
+    //     canvas: fabricRef.current,
+    //     syncStorage,
+    //   });
+    // });
+
+    const handleKeyDownWrapper = (e) => {
+      handleKeyDown({
+        e,
+        canvas: fabricRef.current,
+        syncStorage,
+      });
+    };
+
+    window.addEventListener("keydown", handleKeyDownWrapper);
 
     if (localStorage.getItem("canvas")) {
       canvas.loadFromJSON(localStorage.getItem("canvas"), () => {
@@ -154,6 +177,9 @@ export default function Main() {
 
     return () => {
       canvas.dispose();
+      // fabricRef.current?.dispose();
+
+      window.removeEventListener("keydown", handleKeyDownWrapper);
 
       // remove the event listeners
       window.removeEventListener("resize", () => {
@@ -220,7 +246,7 @@ export default function Main() {
         break;
 
       case "delete":
-        console.log(fabricRef);
+        // console.log(fabricRef);
         handleDelete(fabricRef.current as fabric.Canvas);
         // setActiveElement({ name: "", value: "", icon: "" });
         break;
@@ -234,18 +260,6 @@ export default function Main() {
         selectedShapeRef.current = elem?.value as string;
         break;
     }
-  };
-
-  const handleUndo = () => {
-    dispatch(undoF());
-  };
-
-  const handleRedo = () => {
-    dispatch(redoF());
-  };
-
-  const handleClearAll = () => {
-    dispatch(clearAll());
   };
 
   return (

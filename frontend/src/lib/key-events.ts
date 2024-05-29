@@ -1,29 +1,36 @@
-import { setCanvas } from "@/store/CanvasSlice";
+import store from "@/store";
+import { redoF, setCanvas, undoF } from "@/store/CanvasSlice";
 import { CustomFabricObject } from "@/types/type";
 import { fabric } from "fabric";
 import { v4 as uuidv4 } from "uuid";
 
 export const handleDelete = (canvas: fabric.Canvas) => {
-  console.log("Delete");
-  // console.log(canvas);
+  // console.log("Delete");
+  console.log(canvas);
   const activeObjects = canvas.getActiveObjects();
-  console.log(canvas.getActiveObject());
-  console.log(canvas.getActiveObjects());
+  // console.log(canvas.getActiveObject());
+  // console.log(canvas.getActiveObjects());
   if (!activeObjects || activeObjects.length === 0) return;
 
   if (activeObjects.length > 0) {
     activeObjects.forEach((obj: CustomFabricObject<any>) => {
-      console.log("Deleting object:", obj);
-      if (!obj.objectId) return;
+      // console.log("Deleting object:", obj);
+      // if (!obj.objectId) {
+      //   // console.log("Object ID not found. Skipping delete operation.");
+      //   return;
+      // }
       canvas.remove(obj);
     });
   }
 
-  setCanvas(canvas.toJSON());
-  console.log(canvas.toJSON() + "canvas.toJSON()");
+  // const newCanvasState = canvas.toJSON();
+  // setCanvas(newCanvasState);
+  // setCanvas(JSON.stringify(canvas));
+  store.dispatch(setCanvas(JSON.stringify(canvas)));
+  console.log(canvas);
 
   canvas.discardActiveObject();
-  canvas.renderAll();
+  canvas.requestRenderAll();
 };
 
 export const handleCopy = (canvas: fabric.Canvas) => {
@@ -39,6 +46,8 @@ export const handleCopy = (canvas: fabric.Canvas) => {
 };
 
 export const handlePaste = (canvas: fabric.Canvas) => {
+  console.log("handlePaste function invoked");
+
   if (!canvas || !(canvas instanceof fabric.Canvas)) {
     console.error("Invalid canvas object. Aborting paste operation.");
     return;
@@ -50,20 +59,23 @@ export const handlePaste = (canvas: fabric.Canvas) => {
   if (clipboardData) {
     try {
       const parsedObjects = JSON.parse(clipboardData);
+
+      const offset = 20;
+
       parsedObjects.forEach((objData: fabric.Object) => {
-        // convert the plain javascript objects retrieved from localStorage into fabricjs objects (deserialization)
         fabric.util.enlivenObjects(
           [objData],
           (enlivenedObjects: fabric.Object[]) => {
-            enlivenedObjects.forEach((enlivenedObj) => {
-              // Offset the pasted objects to avoid overlap with existing objects
+            enlivenedObjects.forEach((enlivenedObj, i) => {
               enlivenedObj.set({
-                left: enlivenedObj.left || 0 + 20,
-                top: enlivenedObj.top || 0 + 20,
+                left: (objData.left || 0) + offset * (i + 1),
+                top: (objData.top || 0) + offset * (i + 1),
                 objectId: uuidv4(),
-                fill: "#aabbcc",
+                fill: enlivenedObj.fill,
+                stroke: enlivenedObj.stroke,
               } as CustomFabricObject<any>);
-
+              console.log("adding " + enlivenedObj);
+              console.log(enlivenedObj.top, enlivenedObj.left, "top left");
               canvas.add(enlivenedObj);
             });
             canvas.renderAll();
@@ -89,22 +101,36 @@ export const handleKeyDown = ({
   // Check if the key pressed is ctrl/cmd + c (copy)
   if ((e?.ctrlKey || e?.metaKey) && e.keyCode === 67) {
     handleCopy(canvas);
+    syncStorage();
   }
 
   // Check if the key pressed is ctrl/cmd + v (paste)
   if ((e?.ctrlKey || e?.metaKey) && e.keyCode === 86) {
     handlePaste(canvas);
+    syncStorage();
   }
 
   // Check if the key pressed is delete/backspace (delete)
   if (e.keyCode === 8 || e.keyCode === 46) {
     handleDelete(canvas);
+    syncStorage();
   }
 
   // check if the key pressed is ctrl/cmd + x (cut)
   if ((e?.ctrlKey || e?.metaKey) && e.keyCode === 88) {
     handleCopy(canvas);
     handleDelete(canvas);
+    syncStorage();
+  }
+
+  if (e.ctrlKey && e.keyCode === 90) {
+    store.dispatch(undoF());
+    canvas.requestRenderAll();
+  }
+
+  if (e.ctrlKey && e.keyCode === 89) {
+    store.dispatch(redoF());
+    canvas.requestRenderAll();
   }
 
   if (e.keyCode === 191 && !e.shiftKey) {

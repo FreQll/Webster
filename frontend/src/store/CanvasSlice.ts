@@ -51,10 +51,15 @@ export const canvasSlice = createSlice({
       if (JSON.stringify(state.canvas) === JSON.stringify(action.payload)) {
         return;
       }
-      state.redo = [];
-      state.undo.push(state.canvas);
-      state.canvas = action.payload;
-      localStorage.setItem("canvas", JSON.stringify(state));
+      try {
+        state.redo = [];
+        state.undo.push(state.canvas);
+        state.canvas = action.payload;
+        localStorage.setItem("canvas", JSON.stringify(state));
+      } catch (error) {
+        state.undo = [];
+        state.redo = [];
+      }
     },
     undoF: (state) => {
       console.log("UNDO ", state.undo.length, " ", state.redo.length);

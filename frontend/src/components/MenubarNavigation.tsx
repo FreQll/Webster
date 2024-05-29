@@ -90,7 +90,7 @@ export const MenubarNavigation = ({
 
   const dispatch = useDispatch();
 
-  console.log(user);
+  // console.log(user);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
