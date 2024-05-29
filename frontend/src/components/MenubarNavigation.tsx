@@ -45,7 +45,7 @@ export const MenubarNavigation = ({
 }) => {
   const user = useSelector(selectUser);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const selectedCanvas = useSelector((state: any) => state.canvas.canvas);
+  const selectedCanvas = useSelector((state: any) => state.canvas);
 
   const handleLoadFile = () => {
     loadFile(canvas);
@@ -72,11 +72,12 @@ export const MenubarNavigation = ({
       console.log(resp);
 
       const project = resp.data.filter((canvas: Canvas) => {
-        console.log(JSON.parse(selectedCanvas?.canvas));
-        console.log(JSON.parse(canvas.canvasJSON));
+        console.log(selectedCanvas?.canvas);
+        console.log(canvas.canvasJSON);
 
         return (
-          JSON.parse(canvas.canvasJSON) === JSON.parse(selectedCanvas?.canvas)
+          JSON.stringify(canvas.canvasJSON) ===
+          JSON.stringify(selectedCanvas?.canvas)
         );
       });
 
