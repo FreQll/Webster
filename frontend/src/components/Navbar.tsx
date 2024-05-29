@@ -11,8 +11,6 @@ export const Navbar = () => {
   const user = useSelector(selectUser);
   const dispatch = useDispatch();
 
-  console.log(user);
-
   const handleLogout = () => {
     localStorage.removeItem("user");
     // setUser(null);

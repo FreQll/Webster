@@ -31,6 +31,7 @@ import { Button } from "./ui/button";
 import { useSelector } from "react-redux";
 import { logout, selectUser } from "@/store/UserSlice";
 import { useDispatch } from "react-redux";
+import { setCanvasId } from "@/store/CanvasSlice";
 
 export const MenubarNavigation = ({
   canvas,
@@ -46,6 +47,7 @@ export const MenubarNavigation = ({
   const user = useSelector(selectUser);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const selectedCanvas = useSelector((state: any) => state.canvas);
+  const selectedCanvasId = useSelector((state: any) => state.canvas.id);
 
   const handleLoadFile = () => {
     loadFile(canvas);
@@ -66,30 +68,26 @@ export const MenubarNavigation = ({
     }
   };
 
-  const handleSaveProject = async () => {
+  const dispatch = useDispatch();
+
+  const handleSaveProject = async (saveType: string) => {
     const resp = await axios.get(`/canvas/user/${user.id}`, GET_CONFIG);
+    
     if (resp.status === 200 && canvas) {
-      console.log(resp);
-
       const project = resp.data.filter((canvas: Canvas) => {
-        console.log(selectedCanvas?.canvas);
-        console.log(canvas.canvasJSON);
-
-        return (
-          JSON.stringify(canvas.canvasJSON) ===
-          JSON.stringify(selectedCanvas?.canvas)
-        );
+        return canvas.id === selectedCanvasId;
       });
-
-      if (project.length > 0) {
-        updateCanvas(canvas, project.id);
+      if (saveType == 'old') {
+        updateCanvas(canvas, project[0].id, project[0].name);
       } else {
-        saveCanvas(canvas, user.id);
+        const id = await saveCanvas(canvas, user.id);
+        console.log(id);
+        
+        dispatch(setCanvasId(id));
       }
     }
   };
 
-  const dispatch = useDispatch();
 
   // console.log(user);
 
@@ -117,9 +115,16 @@ export const MenubarNavigation = ({
               Load
             </MenubarItem>
             <MenubarSeparator />
-            <MenubarItem onClick={handleSaveProject}>
+            {/* <MenubarItem onClick={handleSaveProject}>
               Save Project <MenubarShortcut>⌘ Shift S</MenubarShortcut>
-            </MenubarItem>
+            </MenubarItem> */}
+            <MenubarSub>
+              <MenubarSubTrigger>Save Project</MenubarSubTrigger>
+              <MenubarSubContent>
+                <MenubarItem onClick={() => handleSaveProject('new')}>as New file</MenubarItem>
+                {selectedCanvasId.length > 0 && <MenubarItem onClick={() => handleSaveProject('old')}>as Old file</MenubarItem>}
+              </MenubarSubContent>
+            </MenubarSub>
             <MenubarSeparator />
             <MenubarSub>
               <MenubarSubTrigger>Save as</MenubarSubTrigger>

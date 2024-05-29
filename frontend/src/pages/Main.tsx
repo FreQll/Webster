@@ -191,7 +191,6 @@ export default function Main() {
   }, [canvasRef]);
 
   const syncStorage = () => {
-    console.log("SYNCING STORAGE");
     dispatch(updateCanvas(JSON.stringify(fabricRef.current)));
   };
 

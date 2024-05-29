@@ -1,12 +1,14 @@
 import { PayloadAction, createSlice, current } from "@reduxjs/toolkit";
 
 export interface CanvasState {
+  id: string,
   canvas: any;
   undo: any[];
   redo: any[];
 }
 
 const initialState: CanvasState = {
+  id: '',
   canvas: null,
   undo: [],
   redo: [],
@@ -16,6 +18,11 @@ export const canvasSlice = createSlice({
   name: "canvas",
   initialState: initialState,
   reducers: {
+    setCanvasId: (state, action: PayloadAction<any>) => {
+      console.log(action.payload);
+      
+      state.id = action.payload;
+    },
     setCanvas: (state, action: PayloadAction<any>) => {
       state.canvas = action.payload;
       localStorage.setItem("canvas", JSON.stringify(state));
@@ -29,7 +36,7 @@ export const canvasSlice = createSlice({
       localStorage.setItem("canvas", JSON.stringify(state));
     },
     clearAll: (state) => {
-      console.log("CLEAR ALL");
+      state.id = '';
       state.canvas = null;
       state.undo = [];
       state.redo = [];
@@ -93,6 +100,7 @@ export const canvasSlice = createSlice({
 });
 
 export const {
+  setCanvasId,
   setCanvas,
   setUndo,
   setRedo,

@@ -89,8 +89,6 @@ export const handleCanvasMouseDown = ({
 
   canvas.isDrawingMode = false;
 
-  console.log(target?.type);
-  console.log(selectedShapeRef);
   // if target is the selected shape or active selection, set isDrawing to false
   if (
     target &&

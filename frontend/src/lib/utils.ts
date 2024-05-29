@@ -14,12 +14,14 @@ export const saveCanvas = async (canvas: fabric.Canvas, userId: string) => {
   if (!canvasElem) return;
   const dataURL = canvasElem.toDataURL("image/jpg", 1.0);
 
-  await axios.post("/canvas/create", {
+  const resp = await axios.post("/canvas/create", {
     canvasJSON: data,
     userId,
     name: "Untitled",
     imageURL: dataURL,
   });
+
+  return resp.data.id;
 };
 
 export const updateCanvasInfo =  async (canvasJson: fabric.Canvas | string, canvasId: string, title?: string, desc?: string) => {

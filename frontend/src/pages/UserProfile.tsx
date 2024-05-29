@@ -4,7 +4,7 @@ import { logout, selectUser } from "@/store/UserSlice";
 import { useSelector } from "react-redux";
 import { Canvas } from "@/types/type";
 import { loadFile, updateCanvasInfo } from "@/lib/utils";
-import { setCanvas } from "@/store/CanvasSlice";
+import { setCanvas, setCanvasId } from "@/store/CanvasSlice";
 import { useDispatch } from "react-redux";
 import { redirect, useNavigate } from "react-router-dom";
 import {
@@ -33,7 +33,7 @@ const UserProfile = () => {
   const [allProjects, setAllProjects] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const selectedCanvas = useSelector((state: any) => state.canvas.canvas);
+  const selectedCanvas = useSelector((state: any) => state.canvas);
 
   const [newTitle, setNewTitle] = useState("");
   const [newDesc, setNewDesc] = useState("");
@@ -77,8 +77,8 @@ const UserProfile = () => {
       canvasJSON: canvasJSON,
       canvasId: id,
     };
-    console.log(canvasJSON);
     dispatch(setCanvas(canvas.canvasJSON));
+    dispatch(setCanvasId(id));
     navigate("/");
   };
 
