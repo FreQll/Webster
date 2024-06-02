@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
-import { Label } from "../ui/label";
+import { useState } from "react";
 import { HexColorPicker } from "react-colorful";
-import { Attributes } from "@/types/type";
 
 type Props = {
   inputRef: any;
@@ -18,14 +16,14 @@ export const Color = ({
   attributeType,
   handleInputChange,
 }: Props) => {
-  const [color, setColor] = useState<string>(attribute);
+  // const [color, setColor] = useState<string>(attribute);
 
   // useEffect(() => {
   //   handleInputChange(attributeType, color);
   // }, [color]);
 
   const handleColorChange = (color: string) => {
-    setColor(color);
+    // setColor(color);
     handleInputChange(attributeType, color);
   };
 

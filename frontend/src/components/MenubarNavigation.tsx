@@ -72,22 +72,21 @@ export const MenubarNavigation = ({
 
   const handleSaveProject = async (saveType: string) => {
     const resp = await axios.get(`/canvas/user/${user.id}`, GET_CONFIG);
-    
+
     if (resp.status === 200 && canvas) {
       const project = resp.data.filter((canvas: Canvas) => {
         return canvas.id === selectedCanvasId;
       });
-      if (saveType == 'old') {
+      if (saveType == "old") {
         updateCanvas(canvas, project[0].id, project[0].name);
       } else {
         const id = await saveCanvas(canvas, user.id);
         console.log(id);
-        
+
         dispatch(setCanvasId(id));
       }
     }
   };
-
 
   // console.log(user);
 
@@ -121,8 +120,14 @@ export const MenubarNavigation = ({
             <MenubarSub>
               <MenubarSubTrigger>Save Project</MenubarSubTrigger>
               <MenubarSubContent>
-                <MenubarItem onClick={() => handleSaveProject('new')}>as New file</MenubarItem>
-                {selectedCanvasId.length > 0 && <MenubarItem onClick={() => handleSaveProject('old')}>as Old file</MenubarItem>}
+                <MenubarItem onClick={() => handleSaveProject("new")}>
+                  as New file
+                </MenubarItem>
+                {selectedCanvasId.length > 0 && (
+                  <MenubarItem onClick={() => handleSaveProject("old")}>
+                    as Old file
+                  </MenubarItem>
+                )}
               </MenubarSubContent>
             </MenubarSub>
             <MenubarSeparator />
