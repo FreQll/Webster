@@ -30,6 +30,7 @@ export const initializeFabric = ({
 
   if (reduxCanvas && reduxCanvas != "null") {
     const canvas = new fabric.Canvas(canvasRef.current, {
+      backgroundColor: "rgb(255,255,255)",
       width: canvasElement?.clientWidth,
       height: canvasElement?.clientHeight,
     });
@@ -45,6 +46,7 @@ export const initializeFabric = ({
 
   // create fabric canvas
   const canvas = new fabric.Canvas(canvasRef.current, {
+    backgroundColor: "rgb(255,255,255)",
     width: canvasElement?.clientWidth,
     height: canvasElement?.clientHeight,
   });
@@ -275,26 +277,26 @@ export const handleCanvasObjectMoving = ({
   target.setCoords();
 
   // restrict object to canvas boundaries (horizontal)
-  if (target && target.left) {
-    target.left = Math.max(
-      0,
-      Math.min(
-        target.left,
-        (canvas.width || 0) - (target.getScaledWidth() || target.width || 0)
-      )
-    );
-  }
+  // if (target && target.left) {
+  //   target.left = Math.max(
+  //     0,
+  //     Math.min(
+  //       target.left,
+  //       (canvas.width || 0) - (target.getScaledWidth() || target.width || 0)
+  //     )
+  //   );
+  // }
 
-  // restrict object to canvas boundaries (vertical)
-  if (target && target.top) {
-    target.top = Math.max(
-      0,
-      Math.min(
-        target.top,
-        (canvas.height || 0) - (target.getScaledHeight() || target.height || 0)
-      )
-    );
-  }
+  // // restrict object to canvas boundaries (vertical)
+  // if (target && target.top) {
+  //   target.top = Math.max(
+  //     0,
+  //     Math.min(
+  //       target.top,
+  //       (canvas.height || 0) - (target.getScaledHeight() || target.height || 0)
+  //     )
+  //   );
+  // }
 };
 
 // set element attributes when element is selected
@@ -434,11 +436,18 @@ export const handleCanvasZoom = ({
 
   // allow zooming to min 20% and max 100%
   const minZoom = 0.2;
-  const maxZoom = 1;
+  const maxZoom = 2;
   const zoomStep = 0.001;
 
   // calculate zoom based on mouse scroll wheel with min and max zoom
   zoom = Math.min(Math.max(minZoom, zoom + delta * zoomStep), maxZoom);
+
+  let point = { x: options.e.offsetX, y: options.e.offsetY };
+
+  // if (point.x < 0) point.x = 0;
+  // if (point.y < 0) point.y = 0;
+  // if (point.x > canvas.width!) point.x = canvas.width!;
+  // if (point.y > canvas.height!) point.y = canvas.height!;
 
   // set zoom to canvas
   // zoomToPoint: http://fabricjs.com/docs/fabric.Canvas.html#zoomToPoint
@@ -446,4 +455,75 @@ export const handleCanvasZoom = ({
 
   options.e.preventDefault();
   options.e.stopPropagation();
+
+  // let vpt = canvas.viewportTransform;
+  // if (vpt) {
+  //   if (zoom < 1) {
+  //     vpt[4] = canvas.getWidth() / 2 - (canvas.getWidth() * zoom) / 2;
+  //     vpt[5] = canvas.getHeight() / 2 - (canvas.getHeight() * zoom) / 2;
+  //   } else {
+  //     if (vpt[4] >= 0) {
+  //       vpt[4] = 0;
+  //     } else if (vpt[4] < canvas.getWidth() - canvas.getWidth() * zoom) {
+  //       vpt[4] = canvas.getWidth() - canvas.getWidth() * zoom;
+  //     }
+  //     if (vpt[5] >= 0) {
+  //       vpt[5] = 0;
+  //     } else if (vpt[5] < canvas.getHeight() - canvas.getHeight() * zoom) {
+  //       vpt[5] = canvas.getHeight() - canvas.getHeight() * zoom;
+  //     }
+  //   }
+  // }
+
+  // var vpt = this.viewportTransform;
+  // if (zoom < 400 / 1000) {
+  //   vpt[4] = 200 - (1000 * zoom) / 2;
+  //   vpt[5] = 200 - (1000 * zoom) / 2;
+  // } else {
+  //   if (vpt[4] >= 0) {
+  //     vpt[4] = 0;
+  //   } else if (vpt[4] < canvas.getWidth() - 1000 * zoom) {
+  //     vpt[4] = canvas.getWidth() - 1000 * zoom;
+  //   }
+  //   if (vpt[5] >= 0) {
+  //     vpt[5] = 0;
+  //   } else if (vpt[5] < canvas.getHeight() - 1000 * zoom) {
+  //     vpt[5] = canvas.getHeight() - 1000 * zoom;
+  //   }
+  // }
+};
+
+export const vptCoordsCalc = ({
+  fabricRef,
+  setBorder_tl,
+  setBorder_br,
+}: {
+  fabricRef: fabric.Canvas | null;
+  setBorder_tl: (tl: { x: number; y: number }) => void;
+  setBorder_br: (br: { x: number; y: number }) => void;
+}) => {
+  let { tl, tr, bl, br } = fabricRef?.vptCoords || {
+    tl: { x: 0, y: 0 },
+    tr: { x: 0, y: 0 },
+    bl: { x: 0, y: 0 },
+    br: { x: 0, y: 0 },
+  };
+  let vpt = fabricRef?.viewportTransform;
+  if (!vpt) return;
+  let scaleX: number = vpt[0];
+  let scaleY: number = vpt[3];
+  let height: number = fabricRef?.height || 0;
+  let width: number = fabricRef?.width || 0;
+
+  let rtl = { x: -tl.x * scaleX, y: -tl.y * scaleY };
+  let rbr = {
+    x: -tl.x * scaleX + width * scaleX,
+    y: -tl.y * scaleY + height * scaleY,
+  };
+  if (rtl.x < 0) rtl.x = 0;
+  if (rtl.y < 0) rtl.y = 0;
+  if (rbr.x > width) rbr.x = width;
+  if (rbr.y > height) rbr.y = height;
+  setBorder_tl(rtl);
+  setBorder_br(rbr);
 };

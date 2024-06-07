@@ -2,6 +2,7 @@ import Container from "@/components/Container";
 import LeftPanel from "@/components/LeftPanel";
 import RightPanel from "@/components/RightPanel";
 import Live from "../components/Live";
+import SmartBorder from "../components/SmartBorder";
 import React, { useEffect, useRef, useState } from "react";
 import { fabric } from "fabric";
 import {
@@ -16,6 +17,7 @@ import {
   handlePathCreated,
   handleResize,
   initializeFabric,
+  vptCoordsCalc,
 } from "@/lib/canvas";
 import { ActiveElement, Attributes } from "@/types/type";
 import { handleImageUpload } from "@/lib/shapes";
@@ -45,7 +47,8 @@ export default function Main() {
     value: "",
     icon: "",
   });
-
+  const [border_tl, setBorder_tl] = useState({ x: 0, y: 0 });
+  const [border_br, setBorder_br] = useState({ x: 0, y: 0 });
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fabricRef = useRef<fabric.Canvas | null>(null);
   const shapeRef = useRef<fabric.Object | null>(null);
@@ -136,6 +139,11 @@ export default function Main() {
         options,
         canvas,
       });
+      vptCoordsCalc({
+        fabricRef: fabricRef.current,
+        setBorder_tl,
+        setBorder_br,
+      });
     });
 
     canvas.on("object:modified", (options) => {
@@ -144,6 +152,8 @@ export default function Main() {
         syncStorage,
       });
     });
+
+    
 
     window.addEventListener("resize", () => {
       handleResize({
@@ -175,6 +185,8 @@ export default function Main() {
       });
     }
 
+    console.log("fabricRef", fabricRef.current?.vptCoords);
+
     return () => {
       canvas.dispose();
       // fabricRef.current?.dispose();
@@ -197,6 +209,7 @@ export default function Main() {
   useEffect(() => {
     if (!reduxCanvas) {
       fabricRef.current?.clear();
+      fabricRef.current?.setBackgroundColor("rgb(255, 255, 255)", () => {});
       return;
     }
     fabricRef.current?.loadFromJSON(reduxCanvas, () => {
@@ -289,7 +302,7 @@ export default function Main() {
             />
           </div>
           <div className="w-[82%]">
-            <Live canvasRef={canvasRef} />
+            <Live canvasRef={canvasRef} border_tl={border_tl} border_br={border_br}/>
           </div>
           <div className="w-[15%]">
             <RightPanel

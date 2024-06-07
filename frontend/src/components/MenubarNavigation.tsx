@@ -123,7 +123,7 @@ export const MenubarNavigation = ({
                 <MenubarItem onClick={() => handleSaveProject("new")}>
                   as New file
                 </MenubarItem>
-                {selectedCanvasId.length > 0 && (
+                {selectedCanvasId && selectedCanvasId.length > 0 && (
                   <MenubarItem onClick={() => handleSaveProject("old")}>
                     as Old file
                   </MenubarItem>
