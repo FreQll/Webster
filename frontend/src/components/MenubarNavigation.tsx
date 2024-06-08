@@ -57,7 +57,17 @@ export const MenubarNavigation = ({
   const handleSaveToImage = (format: string) => {
     if (canvas) {
       canvas.discardActiveObject().renderAll();
+      if(format === "png") {
+        canvas.setBackgroundColor("rgba(255, 255, 255, 0)", () => {
+          canvas.renderAll();
+        });
+      }
       exportToImage(format);
+      if (format === "png") {
+        canvas.setBackgroundColor("rgba(255, 255, 255, 1)", () => {
+          canvas.renderAll();
+        });
+      }
       saveCanvas(canvas, user.id);
     }
   };
