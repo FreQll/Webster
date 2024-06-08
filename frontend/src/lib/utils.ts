@@ -1,5 +1,5 @@
 import axios from "@/api/axios";
-import { Canvas } from "@/types/type";
+import { jsPDF } from "jspdf";
 import { type ClassValue, clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -24,17 +24,27 @@ export const saveCanvas = async (canvas: fabric.Canvas, userId: string) => {
   return resp.data.id;
 };
 
-export const updateCanvasInfo =  async (canvasJson: fabric.Canvas | string, canvasId: string, title?: string, desc?: string) => {
+export const updateCanvasInfo = async (
+  canvasJson: fabric.Canvas | string,
+  canvasId: string,
+  title?: string,
+  desc?: string
+) => {
   const data = JSON.stringify(canvasJson);
 
   await axios.patch(`/canvas/update/${canvasId}`, {
     canvasJSON: data,
     name: title,
-    description: desc
+    description: desc,
   });
-}
+};
 
-export const updateCanvas = async (canvasJson: fabric.Canvas | string, canvasId: string, title?: string, desc?: string) => {
+export const updateCanvas = async (
+  canvasJson: fabric.Canvas | string,
+  canvasId: string,
+  title?: string,
+  desc?: string
+) => {
   const data = JSON.stringify(canvasJson);
 
   const canvasElem = document.querySelector("canvas");
@@ -45,21 +55,35 @@ export const updateCanvas = async (canvasJson: fabric.Canvas | string, canvasId:
     canvasJSON: data,
     imageURL: dataURL,
     name: title,
-    description: desc
+    description: desc,
   });
 };
 
-export const exportToImage = () => {
+export const exportToImage = (format: string) => {
   const canvas = document.querySelector("canvas");
 
   if (!canvas) return;
 
-  const dataURL = canvas.toDataURL("image/jpg", 1.0);
+  if (format === "pdf") {
+    const pdf = new jsPDF("l", "px", [canvas.width, canvas.height]);
+    pdf.addImage(
+      canvas.toDataURL("image/png"),
+      "PNG",
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+    pdf.save("canvas.pdf");
+    return;
+  }
+
+  const dataURL = canvas.toDataURL(`image/${format}`, 1.0);
 
   // get the canvas data url
   const link = document.createElement("a");
   link.href = dataURL;
-  link.download = "canvas.jpg"; // Specify the file name
+  link.download = `canvas.${format}`; // Specify the file name
   link.click();
 };
 

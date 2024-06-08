@@ -54,10 +54,10 @@ export const MenubarNavigation = ({
     setIsAlertOpen(false);
   };
 
-  const handleSaveToImage = () => {
+  const handleSaveToImage = (format: string) => {
     if (canvas) {
       canvas.discardActiveObject().renderAll();
-      exportToImage();
+      exportToImage(format);
       saveCanvas(canvas, user.id);
     }
   };
@@ -134,7 +134,27 @@ export const MenubarNavigation = ({
             <MenubarSub>
               <MenubarSubTrigger>Save as</MenubarSubTrigger>
               <MenubarSubContent>
-                <MenubarItem onClick={handleSaveToImage}>as Image</MenubarItem>
+                {/* <MenubarItem onClick={handleSaveToImage}>as Image</MenubarItem> */}
+                <MenubarSub>
+                  <MenubarSubTrigger>as Image</MenubarSubTrigger>
+                  <MenubarSubContent>
+                    <MenubarItem onClick={() => handleSaveToImage("png")}>
+                      as PNG
+                    </MenubarItem>
+                    <MenubarItem onClick={() => handleSaveToImage("jpg")}>
+                      as JPG
+                    </MenubarItem>
+                    <MenubarItem onClick={() => handleSaveToImage("jpeg")}>
+                      as JPEG
+                    </MenubarItem>
+                    <MenubarItem onClick={() => handleSaveToImage("webp")}>
+                      as WEBP
+                    </MenubarItem>
+                    <MenubarItem onClick={() => handleSaveToImage("pdf")}>
+                      as PDF
+                    </MenubarItem>
+                  </MenubarSubContent>
+                </MenubarSub>
                 <MenubarItem onClick={handleSaveToFile}>
                   as Project File
                 </MenubarItem>
