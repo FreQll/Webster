@@ -123,19 +123,23 @@ export type Presence = any;
 // };
 
 export type CanvasMouseDown = {
-  options: fabric.IEvent;
+  options: fabric.IEvent<MouseEvent>;
   canvas: fabric.Canvas;
   selectedShapeRef: any;
   isDrawing: React.MutableRefObject<boolean>;
   shapeRef: React.MutableRefObject<fabric.Object | null>;
+  isDragging: React.MutableRefObject<boolean>;
+  lastPositionRef: React.MutableRefObject<{ x: number; y: number }>;
 };
 
 export type CanvasMouseMove = {
-  options: fabric.IEvent;
+  options: fabric.IEvent<MouseEvent>;
   canvas: fabric.Canvas;
   isDrawing: React.MutableRefObject<boolean>;
   selectedShapeRef: any;
   shapeRef: any;
+  isDragging: React.MutableRefObject<boolean>;
+  lastPositionRef: React.MutableRefObject<{ x: number; y: number }>;
 };
 
 export type CanvasMouseUp = {
@@ -145,6 +149,7 @@ export type CanvasMouseUp = {
   activeObjectRef: React.MutableRefObject<fabric.Object | null>;
   selectedShapeRef: any;
   setActiveElement: any;
+  isDragging: React.MutableRefObject<boolean>;
   syncStorage: () => void;
 };
 
