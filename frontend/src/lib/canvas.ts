@@ -30,6 +30,7 @@ export const initializeFabric = ({
 
   if (reduxCanvas && reduxCanvas != "null") {
     const canvas = new fabric.Canvas(canvasRef.current, {
+      backgroundColor: "rgb(255,255,255)",
       width: canvasElement?.clientWidth,
       height: canvasElement?.clientHeight,
     });
@@ -45,6 +46,7 @@ export const initializeFabric = ({
 
   // create fabric canvas
   const canvas = new fabric.Canvas(canvasRef.current, {
+    backgroundColor: "rgb(255,255,255)",
     width: canvasElement?.clientWidth,
     height: canvasElement?.clientHeight,
   });
@@ -64,9 +66,21 @@ export const handleCanvasMouseDown = ({
   selectedShapeRef,
   isDrawing,
   shapeRef,
+  isDragging,
+  lastPositionRef,
 }: CanvasMouseDown) => {
   // get pointer coordinates
   const pointer = canvas.getPointer(options.e);
+
+  let event = options.e;
+
+  // if alt key is pressed, set isDragging to true
+  if (event.altKey) {
+    isDragging.current = true;
+    canvas.selection = false;
+    lastPositionRef.current = { x: event.clientX, y: event.clientY };
+    return;
+  }
 
   /**
    * get target object i.e., the object that is clicked
@@ -133,7 +147,22 @@ export const handleCanvaseMouseMove = ({
   isDrawing,
   selectedShapeRef,
   shapeRef,
+  isDragging,
+  lastPositionRef,
 }: CanvasMouseMove) => {
+  if (isDragging.current) {
+    let e = options.e;
+    let vpt = canvas.viewportTransform;
+    if (vpt) {
+      vpt[4] += e.clientX - lastPositionRef.current.x;
+      vpt[5] += e.clientY - lastPositionRef.current.y;
+      canvas.requestRenderAll();
+      lastPositionRef.current.x = e.clientX;
+      lastPositionRef.current.y = e.clientY;
+      return;
+    }
+  }
+
   // if selected shape is freeform, return
   if (!isDrawing.current) return;
   if (selectedShapeRef.current === "freeform") return;
@@ -202,9 +231,12 @@ export const handleCanvasMouseUp = ({
   activeObjectRef,
   selectedShapeRef,
   setActiveElement,
+  isDragging,
   syncStorage,
 }: CanvasMouseUp) => {
   isDrawing.current = false;
+  isDragging.current = false;
+  canvas.selection = true;
   if (selectedShapeRef.current === "freeform") return;
 
   // sync shape in storage as drawing is stopped
@@ -274,27 +306,27 @@ export const handleCanvasObjectMoving = ({
   // set coordinates of target object
   target.setCoords();
 
-  // restrict object to canvas boundaries (horizontal)
-  if (target && target.left) {
-    target.left = Math.max(
-      0,
-      Math.min(
-        target.left,
-        (canvas.width || 0) - (target.getScaledWidth() || target.width || 0)
-      )
-    );
-  }
+  // // restrict object to canvas boundaries (horizontal)
+  // if (target && target.left) {
+  //   target.left = Math.max(
+  //     0,
+  //     Math.min(
+  //       target.left,
+  //       (canvas.width || 0) - (target.getScaledWidth() || target.width || 0)
+  //     )
+  //   );
+  // }
 
-  // restrict object to canvas boundaries (vertical)
-  if (target && target.top) {
-    target.top = Math.max(
-      0,
-      Math.min(
-        target.top,
-        (canvas.height || 0) - (target.getScaledHeight() || target.height || 0)
-      )
-    );
-  }
+  // // restrict object to canvas boundaries (vertical)
+  // if (target && target.top) {
+  //   target.top = Math.max(
+  //     0,
+  //     Math.min(
+  //       target.top,
+  //       (canvas.height || 0) - (target.getScaledHeight() || target.height || 0)
+  //     )
+  //   );
+  // }
 };
 
 // set element attributes when element is selected
@@ -432,9 +464,9 @@ export const handleCanvasZoom = ({
   const delta = options.e?.deltaY;
   let zoom = canvas.getZoom();
 
-  // allow zooming to min 20% and max 100%
-  const minZoom = 0.2;
-  const maxZoom = 1;
+  // allow zooming to min 20% and max 200%
+  const minZoom = 0.1;
+  const maxZoom = 10;
   const zoomStep = 0.001;
 
   // calculate zoom based on mouse scroll wheel with min and max zoom

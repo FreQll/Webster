@@ -68,6 +68,9 @@ export default function Main() {
   const reduxCanvas = useSelector((state: any) => state.canvas.canvas);
   const dispatch = useDispatch();
 
+  const isDragging = useRef(false);
+  const lastPositionRef = useRef({ x: 0, y: 0 });
+
   const handleUndo = () => {
     dispatch(undoF());
   };
@@ -95,6 +98,8 @@ export default function Main() {
         isDrawing,
         shapeRef,
         selectedShapeRef,
+        isDragging,
+        lastPositionRef,
       });
     });
 
@@ -127,7 +132,20 @@ export default function Main() {
         activeObjectRef,
         selectedShapeRef,
         setActiveElement,
+        isDragging,
         syncStorage,
+      });
+    });
+
+    canvas.on("mouse:move", (options) => {
+      handleCanvaseMouseMove({
+        options,
+        canvas,
+        isDrawing,
+        selectedShapeRef,
+        shapeRef,
+        isDragging,
+        lastPositionRef,
       });
     });
 
@@ -197,6 +215,7 @@ export default function Main() {
   useEffect(() => {
     if (!reduxCanvas) {
       fabricRef.current?.clear();
+      fabricRef.current?.setBackgroundColor("rgb(255, 255, 255)", () => {});
       return;
     }
     fabricRef.current?.loadFromJSON(reduxCanvas, () => {
