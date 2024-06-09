@@ -7,6 +7,8 @@ import { useDispatch } from "react-redux";
 import { updateCanvas } from "@/store/CanvasSlice";
 import { Filters } from "./settings/Filters";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { selectUser } from "@/store/UserSlice";
+import { useSelector } from "react-redux";
 
 const RightPanel = ({
   elementAttributes,
@@ -15,6 +17,7 @@ const RightPanel = ({
   activeObjectRef,
   isEditingRef,
 }: RightSidebarProps) => {
+  const user = useSelector(selectUser);
   const colorInputRef = useRef(null);
   const strokeInputRef = useRef(null);
   const dispatch = useDispatch(); // Move useDispatch to the top level of the component
@@ -36,11 +39,13 @@ const RightPanel = ({
   };
 
   return (
-    <div className="bg-gray-100 flex flex-col sticky right-0 h-full max-sm:hidden min-w-[227px] select-none overflow-y-auto pb-20">
+    <div className="absolute r-0 bg-gray-100 flex flex-col right-0 h-full max-sm:hidden min-w-[227px] select-none overflow-y-auto pb-20">
       <Tabs defaultValue="properties">
         <TabsList className="w-full">
           <TabsTrigger value="properties">Properties</TabsTrigger>
-          <TabsTrigger value="filters">Filters</TabsTrigger>
+          {user.id && (
+            <TabsTrigger value="filters">Filters</TabsTrigger>
+          )}
         </TabsList>
         <TabsContent value="properties">
           <Color

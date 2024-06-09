@@ -2,7 +2,7 @@ import Container from "@/components/Container";
 import LeftPanel from "@/components/LeftPanel";
 import RightPanel from "@/components/RightPanel";
 import Live from "../components/Live";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fabric } from "fabric";
 import {
   handleCanvasMouseDown,
@@ -13,7 +13,6 @@ import {
   handleCanvasSelectionCreated,
   handleCanvasZoom,
   handleCanvaseMouseMove,
-  handlePathCreated,
   handleResize,
   initializeFabric,
 } from "@/lib/canvas";
@@ -27,12 +26,9 @@ import {
 import { MenubarNavigation } from "@/components/MenubarNavigation";
 import {
   setCanvas,
-  setUndo,
-  setRedo,
   updateCanvas,
   undoF,
   redoF,
-  selectCanvas,
   clearAll,
 } from "@/store/CanvasSlice";
 import { useDispatch } from "react-redux";
@@ -61,7 +57,6 @@ export default function Main() {
     stroke: "#aabbcc",
   });
 
-  // console.log(elementAttributes, "elementAttributes");
   const isEditingRef = useRef(false);
   const activeObjectRef = useRef<fabric.Object | null>(null);
 
@@ -169,14 +164,6 @@ export default function Main() {
       });
     });
 
-    // window.addEventListener("keydown", (e) => {
-    //   handleKeyDown({
-    //     e,
-    //     canvas: fabricRef.current,
-    //     syncStorage,
-    //   });
-    // });
-
     const handleKeyDownWrapper = (e: KeyboardEvent) => {
       handleKeyDown({
         e,
@@ -228,37 +215,11 @@ export default function Main() {
     console.log(elem);
 
     switch (elem?.value) {
-      // delete all the shapes from the canvas
-      // case "reset":
-      //   // clear the storage
-      //   deleteAllShapes();
-      //   // clear the canvas
-      //   fabricRef.current?.clear();
-      //   // set "select" as the active element
-      //   setActiveElement(defaultNavElement);
-      //   break;
-
-      // delete the selected shape from the canvas
-      // case "delete":
-      //   // delete it from the canvas
-      //   handleDelete(fabricRef.current as any, deleteShapeFromStorage);
-      //   // set "select" as the active element
-      //   setActiveElement(defaultNavElement);
-      //   break;
-
-      // upload an image to the canvas
       case "image":
-        // trigger the click event on the input element which opens the file dialog
         imageInputRef.current?.click();
-        /**
-         * set drawing mode to false
-         * If the user is drawing on the canvas, we want to stop the
-         * drawing mode when clicked on the image item from the dropdown.
-         */
         isDrawing.current = false;
 
         if (fabricRef.current) {
-          // disable the drawing mode of canvas
           fabricRef.current.isDrawingMode = false;
         }
         break;
@@ -269,12 +230,10 @@ export default function Main() {
         // setActiveElement({ name: "", value: "", icon: "" });
         break;
 
-      // for comments, do nothing
       case "comments":
         break;
 
       default:
-        // set the selected shape to the selected element
         selectedShapeRef.current = elem?.value as string;
         break;
     }
@@ -295,7 +254,6 @@ export default function Main() {
               imageInputRef={imageInputRef}
               activeElement={activeElement}
               handleImageUpload={(e: any) => {
-                // prevent the default behavior of the input element
                 e.stopPropagation();
 
                 handleImageUpload({

@@ -241,7 +241,7 @@ export const MenubarNavigation = ({
       <div className="flex flex-row gap-2 items-center">
         {user.id ? (
           <div className="flex flex-row items-center gap-2">
-            <Link to="/profile">{user.name}</Link>
+            <Link to="/profile">{user.name.slice(0, user.name.indexOf('@'))}</Link>
             <Button className="max-h-[30px]" onClick={handleLogout}>
               Logout
             </Button>
