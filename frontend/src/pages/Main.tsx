@@ -177,7 +177,7 @@ export default function Main() {
     //   });
     // });
 
-    const handleKeyDownWrapper = (e) => {
+    const handleKeyDownWrapper = (e: KeyboardEvent) => {
       handleKeyDown({
         e,
         canvas: fabricRef.current,

@@ -30,15 +30,15 @@ export const Navbar = () => {
 
       <div className="flex flex-row gap-2 items-center">
         {user.id ? (
-          <div>
-            <Link to='/profile'>{user.name}</Link>
+          <>
+            <Link to='/profile'>{user.name.slice(0, user.name.indexOf('@'))}</Link>
             <Button onClick={handleLogout}>Logout</Button>
-          </div>
+          </>
         ) : (
-          <div>
+          <>
             <Link to="/signup">Sign Up</Link>
             <Link to="/login">Login</Link>
-          </div>
+          </>
         )}
       </div>
     </div>
