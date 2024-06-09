@@ -1,8 +1,9 @@
 import store from "@/store";
 import { redoF, setCanvas, undoF } from "@/store/CanvasSlice";
-import { CustomFabricObject } from "@/types/type";
+import { ActiveElement, CustomFabricObject } from "@/types/type";
 import { fabric } from "fabric";
 import { v4 as uuidv4 } from "uuid";
+import { navElements, shapeElements } from "./constants";
 
 export const handleDelete = (canvas: fabric.Canvas) => {
   // console.log("Delete");
@@ -93,10 +94,12 @@ export const handleKeyDown = ({
   e,
   canvas,
   syncStorage,
+  handleActiveElement
 }: {
   e: KeyboardEvent;
   canvas: fabric.Canvas | any;
   syncStorage: () => void;
+  handleActiveElement: any;
 }) => {
   // Check if the key pressed is ctrl/cmd + c (copy)
   if ((e?.ctrlKey || e?.metaKey) && e.keyCode === 67) {
@@ -135,5 +138,25 @@ export const handleKeyDown = ({
 
   if (e.keyCode === 191 && !e.shiftKey) {
     e.preventDefault();
+  }
+
+  if (e.keyCode === 84) {
+    handleActiveElement(navElements.find(elem => elem.value === 'i-text'));
+  }
+
+  if (e.keyCode === 82) {
+    handleActiveElement(shapeElements.find(elem => elem.value === 'rect'));
+  }
+
+  if (e.keyCode === 67 && !e?.ctrlKey) {
+    handleActiveElement(shapeElements.find(elem => elem.value === 'circle'));
+  }
+
+  if (e.keyCode === 84) {
+    handleActiveElement(shapeElements.find(elem => elem.value === 'triangle'));
+  }
+
+  if (e.keyCode === 76) {
+    handleActiveElement(shapeElements.find(elem => elem.value === 'line'));
   }
 };

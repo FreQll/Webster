@@ -110,7 +110,8 @@ export const handleCanvasMouseDown = ({
       target.type === "activeSelection")
   ) {
     isDrawing.current = false;
-
+  
+    
     // set active object to target
     canvas.setActiveObject(target);
 

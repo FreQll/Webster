@@ -169,6 +169,7 @@ export default function Main() {
         e,
         canvas: fabricRef.current,
         syncStorage,
+        handleActiveElement
       });
     };
 
@@ -182,11 +183,7 @@ export default function Main() {
 
     return () => {
       canvas.dispose();
-      // fabricRef.current?.dispose();
-
       window.removeEventListener("keydown", handleKeyDownWrapper);
-
-      // remove the event listeners
       window.removeEventListener("resize", () => {
         handleResize({
           canvas: null,
@@ -225,9 +222,7 @@ export default function Main() {
         break;
 
       case "delete":
-        // console.log(fabricRef);
         handleDelete(fabricRef.current as fabric.Canvas);
-        // setActiveElement({ name: "", value: "", icon: "" });
         break;
 
       case "comments":

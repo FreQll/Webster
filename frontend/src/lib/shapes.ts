@@ -10,8 +10,8 @@ import {
 
 export const createRectangle = (pointer: PointerEvent) => {
   const rect = new fabric.Rect({
-    left: pointer.x,
-    top: pointer.y,
+    left: pointer.x - 50,
+    top: pointer.y - 50,
     width: 100,
     height: 100,
     fill: "#aabbcc",
@@ -23,8 +23,8 @@ export const createRectangle = (pointer: PointerEvent) => {
 
 export const createTriangle = (pointer: PointerEvent) => {
   return new fabric.Triangle({
-    left: pointer.x,
-    top: pointer.y,
+    left: pointer.x - 50,
+    top: pointer.y - 50,
     width: 100,
     height: 100,
     fill: "#aabbcc",
@@ -34,8 +34,8 @@ export const createTriangle = (pointer: PointerEvent) => {
 
 export const createCircle = (pointer: PointerEvent) => {
   return new fabric.Circle({
-    left: pointer.x,
-    top: pointer.y,
+    left: pointer.x - 50,
+    top: pointer.y - 50,
     radius: 100,
     fill: "#aabbcc",
     objectId: uuidv4(),
