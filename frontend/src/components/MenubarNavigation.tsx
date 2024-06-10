@@ -91,8 +91,6 @@ export const MenubarNavigation = ({
         updateCanvas(canvas, project[0].id, project[0].name);
       } else {
         const id = await saveCanvas(canvas, user.id);
-        console.log(id);
-
         dispatch(setCanvasId(id));
       }
     }
@@ -186,54 +184,9 @@ export const MenubarNavigation = ({
               Redo <MenubarShortcut>⇧⌘Z</MenubarShortcut>
             </MenubarItem>
             <MenubarSeparator />
-            <MenubarSub>
-              <MenubarSubTrigger>Find</MenubarSubTrigger>
-              <MenubarSubContent>
-                <MenubarItem>Search the web</MenubarItem>
-                <MenubarSeparator />
-                <MenubarItem>Find...</MenubarItem>
-                <MenubarItem>Find Next</MenubarItem>
-                <MenubarItem>Find Previous</MenubarItem>
-              </MenubarSubContent>
-            </MenubarSub>
-            <MenubarSeparator />
-            <MenubarItem>Cut</MenubarItem>
-            <MenubarItem>Copy</MenubarItem>
-            <MenubarItem>Paste</MenubarItem>
-          </MenubarContent>
-        </MenubarMenu>
-        <MenubarMenu>
-          <MenubarTrigger>View</MenubarTrigger>
-          <MenubarContent>
-            <MenubarCheckboxItem>Always Show Bookmarks Bar</MenubarCheckboxItem>
-            <MenubarCheckboxItem checked>
-              Always Show Full URLs
-            </MenubarCheckboxItem>
-            <MenubarSeparator />
-            <MenubarItem inset>
-              Reload <MenubarShortcut>⌘R</MenubarShortcut>
-            </MenubarItem>
-            <MenubarItem disabled inset>
-              Force Reload <MenubarShortcut>⇧⌘R</MenubarShortcut>
-            </MenubarItem>
-            <MenubarSeparator />
-            <MenubarItem inset>Toggle Fullscreen</MenubarItem>
-            <MenubarSeparator />
-            <MenubarItem inset>Hide Sidebar</MenubarItem>
-          </MenubarContent>
-        </MenubarMenu>
-        <MenubarMenu>
-          <MenubarTrigger>Profiles</MenubarTrigger>
-          <MenubarContent>
-            <MenubarRadioGroup value="benoit">
-              <MenubarRadioItem value="andy">Andy</MenubarRadioItem>
-              <MenubarRadioItem value="benoit">Benoit</MenubarRadioItem>
-              <MenubarRadioItem value="Luis">Luis</MenubarRadioItem>
-            </MenubarRadioGroup>
-            <MenubarSeparator />
-            <MenubarItem inset>Edit...</MenubarItem>
-            <MenubarSeparator />
-            <MenubarItem inset>Add Profile...</MenubarItem>
+            <MenubarItem>Cut <MenubarShortcut>⌘X</MenubarShortcut></MenubarItem>
+            <MenubarItem>Copy <MenubarShortcut>⌘C</MenubarShortcut></MenubarItem>
+            <MenubarItem>Paste <MenubarShortcut>⌘V</MenubarShortcut></MenubarItem>
           </MenubarContent>
         </MenubarMenu>
       </div>

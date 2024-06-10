@@ -140,15 +140,11 @@ export const handleKeyDown = ({
     e.preventDefault();
   }
 
-  if (e.keyCode === 84) {
-    handleActiveElement(navElements.find(elem => elem.value === 'i-text'));
-  }
-
   if (e.keyCode === 82) {
     handleActiveElement(shapeElements.find(elem => elem.value === 'rect'));
   }
 
-  if (e.keyCode === 67 && !e?.ctrlKey) {
+  if (e.keyCode === 67 && !e?.ctrlKey && !e?.metaKey) {
     handleActiveElement(shapeElements.find(elem => elem.value === 'circle'));
   }
 
@@ -158,5 +154,9 @@ export const handleKeyDown = ({
 
   if (e.keyCode === 76) {
     handleActiveElement(shapeElements.find(elem => elem.value === 'line'));
+  }
+
+  if (e.keyCode === 84 && e.shiftKey) {
+    handleActiveElement(navElements.find(elem => elem.value === 'i-text'));
   }
 };

@@ -30,7 +30,9 @@ export const updateCanvasInfo = async (
   title?: string,
   desc?: string
 ) => {
-  const data = JSON.stringify(canvasJson);
+  let data;
+  if (typeof(canvasJson) == 'string') data = JSON.parse(canvasJson)
+  else  data = JSON.stringify(canvasJson)
 
   await axios.patch(`/canvas/update/${canvasId}`, {
     canvasJSON: data,
